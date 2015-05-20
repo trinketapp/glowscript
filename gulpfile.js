@@ -78,7 +78,7 @@ gulp.task('default', function() {
     gulp.src(glowscript_libraries[lib])
       .pipe(uglify())
       .pipe(concat(lib + '.' + version + '.min.js'))
-      .pipe(header("/*This is     a combined, compressed file.  Look at https://github.com/BruceSherwood/glowscript for source code and copyright information.*/"))
+      .pipe(header("/*This is a combined, compressed file.  Look at https://github.com/BruceSherwood/glowscript for source code and copyright information.*/"))
       .pipe(gulp.dest('./package/'));
   });
 });
