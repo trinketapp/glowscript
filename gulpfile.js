@@ -8,7 +8,7 @@ var gulp   = require('gulp')
   , version
   , glowscript_libraries;
 
-version = '1.1';
+version = '1.1.1';
 
 glowscript_libraries = {
   "glow": [
@@ -67,11 +67,11 @@ gulp.task('default', function() {
   gulp.src('./shaders/*.shader')
     .pipe(tap(function(file) {
       shader_key = path.basename(file.path, '.shader');
-      file.contents = new Buffer('"' + shader_key + '":' + JSON.stringify(file.contents.toString()));
+      file.contents = new Buffer('    ' + shader_key + ': ' + JSON.stringify(file.contents.toString()));
       return file;
     }))
     .pipe(concat('shaders.gen.js', { sep : ',\n' }))
-    .pipe(wrap('Export({ shaders: {\n<%= contents %>\n}});'))
+    .pipe(wrap('Export({shaders: {\n<%= contents %>\n}});'))
     .pipe(gulp.dest('./lib/glow/'));
 
   Object.keys(glowscript_libraries).forEach(function(lib) {
