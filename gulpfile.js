@@ -8,7 +8,7 @@ var gulp   = require('gulp')
   , version
   , glowscript_libraries;
 
-version = '1.1.1';
+version = '1.1.2';
 
 glowscript_libraries = {
   "glow": [
