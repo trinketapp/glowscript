@@ -4,11 +4,12 @@ var gulp   = require('gulp')
   , wrap   = require('gulp-wrap')
   , tap    = require('gulp-tap')
   , header = require('gulp-header')
+  , gulpUtil = require('gulp-util')
   , path   = require('path')
   , version
   , glowscript_libraries;
 
-version = '1.1.2';
+version = '1.1.3';
 
 glowscript_libraries = {
   "glow": [
@@ -28,35 +29,28 @@ glowscript_libraries = {
     "lib/glow/color.js",
     "lib/glow/primitives.js",
     "lib/glow/api_misc.js",
-    "lib/glow/shaders.gen.js"
+    "lib/glow/shaders.gen.js",
+    "lib/transform-all.js"
   ],
   "compiler": [
-    "lib/narcissus/lib/jsdefs.js",
-    "lib/narcissus/lib/jslex.js",
-    "lib/narcissus/lib/jsparse.js",
-    "lib/narcissus/lib/jsdecomp.js",
-    "lib/streamline/compiler/format.js",
-    "lib/streamline/compiler/transform.js",
     "lib/compiler.js",
+    "lib/papercomp.js",
+    "lib/transform-all.js",
     "lib/coffee-script.js"
   ],
   "RSrun": [
+    "lib/rapydscript/baselib.js",
     "lib/rapydscript/stdlib.js"
   ],
   "RScompiler": [
-    "lib/narcissus/lib/jsdefs.js",
-    "lib/narcissus/lib/jslex.js",
-    "lib/narcissus/lib/jsparse.js",
-    "lib/narcissus/lib/jsdecomp.js",
-    "lib/streamline/compiler/format.js",
-    "lib/streamline/compiler/transform.js",
     "lib/compiler.js",
+    "lib/papercomp.js",
+    "lib/transform-all.js",
     "lib/rapydscript/utils.js",
     "lib/rapydscript/ast.js",
     "lib/rapydscript/output.js",
     "lib/rapydscript/parse.js",
-    "lib/rapydscript/baselib.js",
-    "lib/rapydscript/stdlib.js"
+    "lib/rapydscript/baselib.js"
   ],
 };
 
@@ -76,7 +70,7 @@ gulp.task('default', function() {
 
   Object.keys(glowscript_libraries).forEach(function(lib) {
     gulp.src(glowscript_libraries[lib])
-      .pipe(uglify())
+      .pipe(uglify().on('error', gulpUtil.log))
       .pipe(concat(lib + '.' + version + '.min.js'))
       .pipe(header("/*This is a combined, compressed file.  Look at https://github.com/BruceSherwood/glowscript for source code and copyright information.*/"))
       .pipe(gulp.dest('./package/'));

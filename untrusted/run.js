@@ -3,6 +3,7 @@
 window.glowscript_libraries = { // used for unpackaged (X.Ydev) version
     run: [
         "../lib/jquery/1.1/jquery.mousewheel.js",
+        "../lib/jquery/1.1/jquery.ui.touch-punch.min.js",
         "../lib/flot/jquery.flot.min.js",
         "../lib/flot/jquery.flot.crosshair_GS.js",
         "../lib/glMatrix.js",
@@ -22,30 +23,21 @@ window.glowscript_libraries = { // used for unpackaged (X.Ydev) version
         "../lib/glow/shaders.gen.js"
         ],
     compile: [
-        "../lib/narcissus/lib/jsdefs.js",
-        "../lib/narcissus/lib/jslex.js",
-        "../lib/narcissus/lib/jsparse.js",
-        "../lib/narcissus/lib/jsdecomp.js",
-        "../lib/streamline/compiler/format.js",
-        "../lib/streamline/compiler/transform.js",
         "../lib/compiler.js",
+        "../lib/papercomp.js",
+        "../lib/transform-all.js",
         "../lib/coffee-script.js"],
     RSrun: [
         "../lib/rapydscript/stdlib.js"],
     RScompile: [
-        "../lib/narcissus/lib/jsdefs.js",
-        "../lib/narcissus/lib/jslex.js",
-        "../lib/narcissus/lib/jsparse.js",
-        "../lib/narcissus/lib/jsdecomp.js",
-        "../lib/streamline/compiler/format.js",
-        "../lib/streamline/compiler/transform.js",
         "../lib/compiler.js",
+        "../lib/papercomp.js",
+        "../lib/transform-all.js",
         "../lib/rapydscript/baselib.js",
         "../lib/rapydscript/utils.js",
         "../lib/rapydscript/ast.js",
         "../lib/rapydscript/output.js",
-        "../lib/rapydscript/parse.js"
-        ],
+        "../lib/rapydscript/parse.js"],
     ide: []
 }
 
@@ -85,11 +77,11 @@ function ideRun() {
                 var packages = []
                 var choose = progver
                 if (Number(progver)<1.1) {choose = "bef1.1"}
-                else if (Number(progver)<=1.2) {choose = "1.1"}
+                choose = "1.1"
                 packages.push("../css/redmond/" + choose + "/jquery-ui.custom.css",
                               "../lib/jquery/"  + choose + "/jquery.min.js",
                               "../lib/jquery/"  + choose + "/jquery-ui.custom.min.js")
-                if (choose == "1.1") packages.push("../lib/jquery/"  + choose + "/jquery.ui.touch-punch.min.js")
+                if (choose >= "1.1") packages.push("../lib/jquery/"  + choose + "/jquery.ui.touch-punch.min.js")
                 if (message.unpackaged) {
                     packages.push.apply(packages, glowscript_libraries.run)
                     if (message.lang == 'rapydscript' || message.lang == 'vpython') {
@@ -98,7 +90,7 @@ function ideRun() {
                     } else packages.push.apply(packages, glowscript_libraries.compile)
                 } else {
                     packages.push("../package/glow." + message.version + ".min.js")
-                    if (choose == "1.1" && (message.lang == 'rapydscript' || message.lang == 'vpython')) {
+                    if (Number(progver) >= 1.1 && (message.lang == 'rapydscript' || message.lang == 'vpython')) {
                         packages.push("../package/RScompiler." + message.version + ".min.js")
                         packages.push("../package/RSrun." + message.version + ".min.js")
                     } else
@@ -135,8 +127,6 @@ function ideRun() {
         try {
             if (program.charAt(0) == '\n') program = program.substr(1) // There can be a spurious '\n' at the start of the program source
             var options = {lang: lang, version: version}
-            //WHY? window.translations = options.translations = [program]
-            options.translations = [program]
             var program = glowscript_compile(program, options)
             //var p = program.split('\n')
         	//for (var i=0; i<p.length; i++) console.log(i, p[i])
@@ -192,10 +182,13 @@ function ideRun() {
     }
 
     function reportScriptError(program, err) { // This machinery only works on Chrome
-        // err.stack: https://code.google.com/p/v8-wiki/wiki/JavaScriptStackTraceApi
-    	// TraceKit - Cross browser stack traces: https://github.com/occ/TraceKit
+    	// TraceKit - Cross browser stack traces: https://github.com/csnover/TraceKit
+    	var prog = program.split('\n')
+    	//for(var i=0; i<prog.length; i++) console.log(i, prog[i])
     	var referror = (err.__proto__.name === 'ReferenceError')
-    	//var unpack = /[ ]*at[ ]([^ ]*)[^>]*>:(\d*):(\d*)/
+    	console.log('Error', err)
+    	console.log('Stack', err.stack)
+    	console.log('referror', referror)
     	var unpack = /[ ]*at[ ]([^ ]*)[^>]*>:(\d*):(\d*)/
     	var traceback = []
         if (err.cursor) {
@@ -222,26 +215,45 @@ function ideRun() {
                 var i, m, caller, jsline, jschar
                 for (i=1; i<rawStack.length; i++) {
                     m = rawStack[i].match(unpack)
-	                    if (m === null) continue
+	                if (m === null) continue
 	                caller = m[1]
 	                jsline = m[2]
 	                jschar = m[3]
+                    /*
                 	if (caller == 'new') {
                 		m = rawStack[i].match(/[ ]*at[ ]new[ ]*([^ ]*)/)
                 		caller = m[1]
                 	}
+                	*/
                     if (caller == 'compileAndRun') break
-                	if (!referror && !caller == '__$main' &&
-                			(caller[0] == '_' || caller == 'main' || caller.slice(0,4) == 'http')) continue
-                    var L = window.__linenumbers[jsline-1]
-	                if (L === undefined) continue
-	                var N = Number(L)+1
-	                // Index original text with L-2; 1 for the header line (GlowScript X.Y) and 1 for counting from 0 in the text array:
-	                if (first) traceback.push('Line '+N+': '+window.__original.text[L-2])
-	                else traceback.push('Called from line '+N+': '+window.__original.text[L-2])
+                    if (caller == 'main') break
+
+                	var line = prog[jsline-1]
+                	var L = undefined
+                	var end = undefined
+                	for (var c=jschar; c>=0; c--) {  // look for preceding "linenumber";
+                		if (line[c] == ';') {
+                			if (c > 0 && line[c-1] == '"') {
+	                			var end = c-1 // rightmost digit in "23";
+	                			c--
+                			}
+                		} else if (line[c] == '"' && end !== undefined) {
+                			L = line.slice(c+1,end)
+                			break
+                		} else if (c === 0) {
+                			jsline--
+                			line = prog[jsline-1]
+                			c = line.length
+                		}
+                	}
+                	if (L === undefined) continue
+	                var N = Number(L)
+	                if (first) traceback.push('Line '+N+': '+window.__original.text[N-2])
+	                else traceback.push('Called from line '+N+': '+window.__original.text[N-2])
 	                first = false
                     traceback.push("")
-	                if (referror) break
+                    if (caller == '__$main') break
+	                //if (referror) break
                 }
             } catch (ignore) {
             }
