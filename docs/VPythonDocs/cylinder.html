@@ -40,7 +40,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
 <p><select id="menu2" onchange="jumpMenu(this)"></select></p>
 <p><select id="menu3" onchange="jumpMenu(this)"></select></p>
         
-    <p class="Normal">What's new in <a href="new_features.html">VPython 6</a></p>
+    <p class="Normal"><a href="new_features.html">What's new</a></p>
     <p class="Normal"><a href="http://vpython.org" target="_blank">Classic VPython web site</a><br />
       <a href="license.txt" target="_blank">VPython license</a><br />
       <a href="http://www.python.org" target="_blank">Python web site</a> <br /></p></td>
@@ -91,12 +91,13 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
           <p class="attributes"> <font color="#FF0000" class="attribute">pos</font> Position: the center of one end of the cylinder; default = vector(0,0,0)<br />
   </p>
           <p class="attributes"> <font color="#FF0000">axis</font> The axis points from 
-            pos to the other end of the cylinder, default = vector(1,0,0)</p>
-          <p class="attributes"> <span class="attribute">radius</span> The radius of 
-        the cylinder, default = 1</p>
+            pos to the other end of the cylinder, default = vector(1,0,0). Setting the axis affects length:</p>
           <p class="attributes"> <span class="attribute">length</span> Length of axis; 
             if not specified, axis determines the length, default = 1<br />
             If length is specified, it overrides the length given by axis</p>
+          <p class="attributes"> <span class="attribute">radius</span> The radius of 
+            the cylinder, default = 1</p>
+          <p class="attributes"> <span class="attribute">size</span> Instead of specifying length and radius, you can set size=vector(length,height,width), which means that the cross section of the cylinder can be elliptical, which is not currently possible in classic VPython</p>
           <p class="attributes"> <span class="attribute">color</span> Color of object, 
             as a red-green-blue (RGB) triple: vector(1,0,0) is pure red, default = vector(1,1,1), 
             which is color.white</p>
@@ -104,12 +105,14 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
             defaults are all 1</p>
           <p class="attributes"> <span class="attribute">opacity</span> Opacity
             of object, default = 1; 0 is completely transparent</p>
+          <p class="attributes"> <span class="attribute">shininess</span> 0 to 1, default 0.6; governs the amount of specular reflections.</p>
+          <p class="attributes"> <span class="attribute">emissive</span> If True, local and distant lights are ignored, and the brightness is governed by the object's own color.   An example of its use is to put an emissive sphere at the location of a local_light, which looks like a glowing lamp.   The default for emissive is False.</p>
           <p class="attributes"><span class="attribute">texture</span> Texture
         of object; see <a href="../GlowScriptDocs/textures.html">Textures</a> for currently available options (there are no materials in the GlowScript version of VPython, but textures are similar)</p>
           <p class="attributes"><span class="attribute">up</span> Which side
             of the  cylinder is &quot;up&quot;; this has only a subtle effect
-            on the 3D appearance  of the cylinder unless a non-smooth material
-            is specified; default vector(0,1,0)</p>
+            on the 3D appearance  of the cylinder unless a non-smooth texture 
+            is specified or the cross section is oval; default vector(0,1,0)</p>
           <p class="Normal"> Note that the <span class="attribute">pos</span> attribute 
             for cylinder, arrow, cone, and pyramid corresponds to one end of the object, 
             whereas for a box, sphere, or ring it corresponds to the center of the object.  </p>
