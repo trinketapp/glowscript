@@ -4,6 +4,7 @@ var gulp   = require('gulp')
   , wrap   = require('gulp-wrap')
   , tap    = require('gulp-tap')
   , header = require('gulp-header')
+  , gulpUtil = require('gulp-util')
   , path   = require('path')
   , version
   , glowscript_libraries;
@@ -38,11 +39,11 @@ glowscript_libraries = {
     "lib/transform-all.js",
     "lib/coffee-script.js"
   ],
-  RSrun: [
+  "RSrun": [
     "lib/rapydscript/baselib.js",
     "lib/rapydscript/stdlib.js"
   ],
-  RScompiler: [
+  "RScompiler": [
     "lib/compiler.js",
     "lib/papercomp.js",
     "lib/transform-all.js",
@@ -61,18 +62,18 @@ gulp.task('default', function() {
   gulp.src('./shaders/*.shader')
     .pipe(tap(function(file) {
       shader_key = path.basename(file.path, '.shader');
-      file.contents = new Buffer('"' + shader_key + '":' + JSON.stringify(file.contents.toString()));
+      file.contents = new Buffer('    ' + shader_key + ': ' + JSON.stringify(file.contents.toString()));
       return file;
     }))
     .pipe(concat('shaders.gen.js', { sep : ',\n' }))
-    .pipe(wrap('Export({ shaders: {\n<%= contents %>\n}});'))
+    .pipe(wrap('Export({shaders: {\n<%= contents %>\n}});'))
     .pipe(gulp.dest('./lib/glow/'));
 
   Object.keys(glowscript_libraries).forEach(function(lib) {
     gulp.src(glowscript_libraries[lib])
-      .pipe(uglify())
+      .pipe(uglify().on('error', gulpUtil.log))
       .pipe(concat(lib + '.' + version + '.min.js'))
-      .pipe(header("/*This is     a combined, compressed file.  Look at https://github.com/BruceSherwood/glowscript for source code and copyright information.*/"))
+      .pipe(header("/*This is a combined, compressed file.  Look at https://github.com/BruceSherwood/glowscript for source code and copyright information.*/"))
       .pipe(gulp.dest('./package/'));
   });
 });
