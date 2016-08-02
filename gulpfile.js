@@ -8,11 +8,12 @@ var gulp   = require('gulp')
   , version
   , glowscript_libraries;
 
-version = '1.1';
+version = '2.0.1';
 
 glowscript_libraries = {
   "glow": [
-    "lib/jquery/jquery.mousewheel.js",
+    "lib/jquery/2.0/jquery.mousewheel.js",
+    "lib/jquery/2.0/jquery.ui.touch-punch.min.js",
     "lib/flot/jquery.flot.min.js",
     "lib/flot/jquery.flot.crosshair_GS.js",
     "lib/glMatrix.js",
@@ -28,24 +29,29 @@ glowscript_libraries = {
     "lib/glow/color.js",
     "lib/glow/primitives.js",
     "lib/glow/api_misc.js",
-    "lib/glow/shaders.gen.js"
+    "lib/glow/shaders.gen.js",
+    "lib/transform-all.js"
   ],
   "compiler": [
-               "../lib/compiler.js",
-               "../lib/papercomp.js",
-               "../lib/transform-all.js",
-               "../lib/coffee-script.js"],
-           RSrun: [
-               "../lib/rapydscript/stdlib.js"],
-           RScompile: [
-               "../lib/compiler.js",
-               "../lib/papercomp.js",
-               "../lib/transform-all.js",
-               "../lib/rapydscript/baselib.js",
-               "../lib/rapydscript/utils.js",
-               "../lib/rapydscript/ast.js",
-               "../lib/rapydscript/output.js",
-               "../lib/rapydscript/parse.js"],
+    "lib/compiler.js",
+    "lib/papercomp.js",
+    "lib/transform-all.js",
+    "lib/coffee-script.js"
+  ],
+  RSrun: [
+    "lib/rapydscript/baselib.js",
+    "lib/rapydscript/stdlib.js"
+  ],
+  RScompiler: [
+    "lib/compiler.js",
+    "lib/papercomp.js",
+    "lib/transform-all.js",
+    "lib/rapydscript/utils.js",
+    "lib/rapydscript/ast.js",
+    "lib/rapydscript/output.js",
+    "lib/rapydscript/parse.js",
+    "lib/rapydscript/baselib.js"
+  ]
 };
 
 gulp.task('default', function() {
