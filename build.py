@@ -24,7 +24,7 @@ shader_file.append("}});")
 shader_file = "\n".join(shader_file)
 open("lib/glow/shaders.gen.js", "wb").write(shader_file)
 
-version = "1.2dev"
+version = "2.1dev"
 # TODO: Extract this information from run.js
 
 glowscript_libraries = {
@@ -46,7 +46,8 @@ glowscript_libraries = {
         "../lib/glow/color.js",
         "../lib/glow/primitives.js",
         "../lib/glow/api_misc.js",
-        "../lib/glow/shaders.gen.js"
+        "../lib/glow/shaders.gen.js",
+        "../lib/transform-all.js" # needed for running programs embedded in other web sites
         ],
     "compile": [
         "../lib/compiler.js",
@@ -54,6 +55,7 @@ glowscript_libraries = {
         "../lib/transform-all.js",
         "../lib/coffee-script.js"],
     "RSrun": [
+        "../lib/rapydscript/baselib.js",
         "../lib/rapydscript/stdlib.js"
         ],
     "RScompile": [

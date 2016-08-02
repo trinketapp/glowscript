@@ -9,11 +9,12 @@ var gulp   = require('gulp')
   , version
   , glowscript_libraries;
 
-version = '1.1.3';
+version = '2.0.1';
 
 glowscript_libraries = {
   "glow": [
-    "lib/jquery/jquery.mousewheel.js",
+    "lib/jquery/2.0/jquery.mousewheel.js",
+    "lib/jquery/2.0/jquery.ui.touch-punch.min.js",
     "lib/flot/jquery.flot.min.js",
     "lib/flot/jquery.flot.crosshair_GS.js",
     "lib/glMatrix.js",
@@ -51,7 +52,7 @@ glowscript_libraries = {
     "lib/rapydscript/output.js",
     "lib/rapydscript/parse.js",
     "lib/rapydscript/baselib.js"
-  ],
+  ]
 };
 
 gulp.task('default', function() {
