@@ -62,6 +62,9 @@
         <br />
         <strong>norm(A) = A.norm()</strong> = A/|A|,  a unit vector in the direction of the vector<br />
         <br />
+        <strong>hat(A) = A.hat</strong> = 
+A/|A|,  a unit vector in the direction of the vector; an alternative to A.norm(), based on the fact that unit vectors are customarily written in the form <strong>ĉ</strong>, with a &quot;hat&quot; over the vector<br />
+        <br />
         <strong>dot(A,B) = A.dot(B)</strong> = A dot B, the scalar dot product between two vectors<br />
         <br />
         <strong>cross(A,B) = A.cross(B</strong>), the vector cross product between two vectors<br />
@@ -69,15 +72,12 @@
         <strong>diff_angle(A,B) = A.diff_angle(B)</strong>, the angle between two vectors, in radians<br />
         <br />
         <strong>A.equals(B)</strong> is true if all components of A and B are equal<br />
-        <br />
-        <strong>rotate(A,theta,B) = rotate(A,angle=theta,axis=B)<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = A.rotate(angle=theta,axis=B)</strong>,  result of rotating A through angle theta around axis B; if the axis is not specified, the rotation occurs around vec(0,0,1).<br />
         <strong><br />
         A.proj(B) = dot(A,norm(B))*norm(B)</strong>, the vector projection of A along B<br />
         <br />
         <strong>A.comp(B) = dot(A,norm(B))</strong>, the scalar projection of A along B<br />
         <br />
-        <strong>A.random()</strong> produces a vector each of whose components are random numbers in the range -1 to +1<br />
+        <strong>vec.random()</strong> produces a vector each of whose components are random numbers in the range -1 to +1<br />
       <br />
       Some examples:</p>
 
@@ -97,10 +97,14 @@
           <p class="program">norm(A) # A/|A|, normalized; magnitude 1<br />
           norm(vec(1,1,1)) # vec(1,1,1)/sqrt(3)</p>
           <p class="Normal">You can also write <span class="attribute">v1.norm()</span><span
- class="attribute"></span>. For convenience, <span class="attribute">norm(vec(0,0,0))</span> is calculated to be <span class="attribute">vec(0,0,0)</span>. <span class="attribute"></span> </p>
+ class="attribute"></span> or <span class="attribute">v1.hat</span>. For convenience, <span class="attribute">norm(vec(0,0,0))</span> is calculated to be <span class="attribute">vec(0,0,0)</span>. <span class="attribute"></span> </p>
+          <p class="Normal">You can change the direction of a vector without changing its magnitude:</p>
+      <p class="program"> v2.hat = v1 # changes the direction of v2<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# but not its magnitude<br />
+      </p>
   
                 <p class="Normal">To calculate the angle between two vectors (the &quot;difference&quot; 
-                  of the angles of the two vectors):</p>
+            of the angles of the two vectors):</p>
 
             <p class="program">ang = v1.diff_angle(v2)</p>
             <p class="Normal"> You can also write <span class="attribute">v1.diff_angle(v2)</span><span
@@ -117,14 +121,15 @@
     between the vectors, which is often useful.          </p>
       <p class="Normal"><font color="#0000a0"><strong>Rotating a vector</strong></font></p>
           <p class="Normal"> There is a function for rotating a vector:<font color="#0000a0"></font></p>
-          <p class="program"> v2 = v1.rotate(angle=a, axis=vec(x,y,z))</p>
+          <p class="program"> v2 = rotate(v1, angle=a, axis=vec(x,y,z))</p>
           <p class="Normal">The angle must be in radians. The default axis is
             (0,0,1), for a rotation counterclockwise in the xy plane around the z axis. There
             is no origin for rotating a vector. You can also write <span class="attribute">v2
             = v1.rotate(angle=theta, axis=vec(1,1,1))</span>. There is also a <a href="rotation.html">rotate capability for 
-              objects</a>.</p>
+          objects</a>.</p>
+          <p class="Normal">The JavaScript versions are v2 = rotate(v1, {angle:a, axis=vec(x,y,z}) and v2 = v1.rotate({angle:a, axis=vec(x,y,z}).</p>
           <p class="Normal">There are functions for converting between degrees
-            and radians, where there are 2*pi radians in 360 degrees: </p>
+        and radians, where there are 2*pi radians in 360 degrees: </p>
           <p class="program">radians(360) &nbsp;is equivalent to 2*pi<br />
           degrees(2*pi) is equivalent to  360</p>
           <p class="Normal"></p>

@@ -18,6 +18,7 @@ s += '<option value="points.html">points</option>'
 s += '<option value="pyramid.html">pyramid</option>'
 s += '<option value="ring.html">ring</option>'
 s += '<option value="sphere.html">sphere</option>'
+s += '<option value="text.html">text</option>'
 s += '<option value="triangle.html">triangle/quad</option>'
 document.getElementById("menu1").innerHTML = s
 
@@ -38,12 +39,11 @@ s += '<option value="math.html">Math Functions</option>'
 s += '<option value="vector.html">Vector Operations </option>'
 s += '<option value="MathJax.html">LaTeX Math Displays</option>'
 s += '<option value="files.html">Libraries &amp; Files</option>'
-s += '<option value="factorial.html">factorial/combin</option>'
 document.getElementById("menu2").innerHTML = s
 
 s = ''
 s += '<option>Canvases/Events</option>'
-s += '<option value="display.html">Canvases</option>'
+s += '<option value="canvas.html">Canvases</option>'
 s += '<option value="graph.html">Graphs</option>'
 s += '<option value="mouse.html">Mouse/Keyboard</option>'
 s += '<option value="mouse_click.html">&nbsp;&nbsp;&nbsp;Mouse Click</option>'

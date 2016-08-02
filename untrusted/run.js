@@ -2,10 +2,10 @@
 
 window.glowscript_libraries = { // used for unpackaged (X.Ydev) version
     run: [
-        "../lib/jquery/2.0/jquery.mousewheel.js",
-        "../lib/jquery/2.0/jquery.ui.touch-punch.min.js",
+        "../lib/jquery/2.1/jquery.mousewheel.js",
         "../lib/flot/jquery.flot.min.js",
         "../lib/flot/jquery.flot.crosshair_GS.js",
+//        "../lib/micromarkdown.min.js", // markdown, not ready to use yet
         "../lib/glMatrix.js",
         "../lib/webgl-utils.js",
 //        "../lib/glow/glow.css", // not ready to use yet
@@ -19,25 +19,34 @@ window.glowscript_libraries = { // used for unpackaged (X.Ydev) version
         "../lib/glow/graph.js",
         "../lib/glow/color.js",
         "../lib/glow/primitives.js",
+        "../lib/glow/poly2tri.js",
+        "../lib/glow/opentype.js",
+        "../lib/glow/extrude.js",
         "../lib/glow/api_misc.js",
         "../lib/glow/shaders.gen.js",
         "../lib/transform-all.js" // needed for running programs embedded in other web sites
         ],
     compile: [
+        //"../lib/glow/opentype.js",
         "../lib/compiler.js",
         "../lib/papercomp.js",
         "../lib/transform-all.js",
         "../lib/coffee-script.js"],
-    RSrun: ["../lib/rapydscript/stdlib.js"],
+    RSrun: [
+            "../lib/rapydscript/baselib.js",
+            "../lib/rapydscript/stdlib.js"
+            ],
     RScompile: [
+        //"../lib/glow/opentype.js",
         "../lib/compiler.js",
         "../lib/papercomp.js",
         "../lib/transform-all.js",
-        "../lib/rapydscript/baselib.js",
         "../lib/rapydscript/utils.js",
         "../lib/rapydscript/ast.js",
         "../lib/rapydscript/output.js",
-        "../lib/rapydscript/parse.js"],
+        "../lib/rapydscript/parse.js",
+        "../lib/rapydscript/baselib.js"
+        ],
     ide: []
 }
 
@@ -61,6 +70,13 @@ function ideRun() {
         window.parent.postMessage(msg, trusted_origin)
         if (also_trusted) window.parent.postMessage(msg, also_trusted)
     }
+    
+    /*
+    function msclock() {
+    	if (performance.now) return performance.now()
+    	else return new Date().getTime()
+    }
+    */
 
     function waitScript() {
         $(window).bind("message", receiveMessage)
@@ -76,13 +92,14 @@ function ideRun() {
                 var progver = message.version.substr(0,3)
                 var packages = []
                 var choose = progver
-                if (Number(progver)<1.1) {choose = "bef1.1"}
-                else if (Number(progver)==1.1) {choose = "1.1"}
-                else {choose = "2.0"}
+                var ver = Number(progver)
+                if (ver < 1.1) choose = "bef1.1"
+                else if (ver <= 2.1) choose = progver // currently 1.1, 2.0, or 2.1
+                else choose = 2.1 // 2.2dev
                 packages.push("../css/redmond/" + choose + "/jquery-ui.custom.css",
                               "../lib/jquery/"  + choose + "/jquery.min.js",
                               "../lib/jquery/"  + choose + "/jquery-ui.custom.min.js")
-                if (choose >= "1.1") packages.push("../lib/jquery/"  + choose + "/jquery.ui.touch-punch.min.js")
+                if (ver >= 1.1 && ver < 2.1) packages.push("../lib/jquery/"  + choose + "/jquery.ui.touch-punch.min.js")
                 if (message.unpackaged) {
                     packages.push.apply(packages, glowscript_libraries.run)
                     if (message.lang == 'rapydscript' || message.lang == 'vpython') {
@@ -91,7 +108,7 @@ function ideRun() {
                     } else packages.push.apply(packages, glowscript_libraries.compile)
                 } else {
                     packages.push("../package/glow." + message.version + ".min.js")
-                    if (Number(progver) >= 1.1 && (message.lang == 'rapydscript' || message.lang == 'vpython')) {
+                    if (ver >= 1.1 && (message.lang == 'rapydscript' || message.lang == 'vpython')) {
                         packages.push("../package/RScompiler." + message.version + ".min.js")
                         packages.push("../package/RSrun." + message.version + ".min.js")
                     } else
@@ -99,14 +116,13 @@ function ideRun() {
                 }
                 
                 head.load(packages, function() {
-                    // All the libraries are ready; run the program
                     if (message.version === "0.3") window.glowscript = { version: "0.3" }
-                    if (glowscript.version !== message.version && !message.unpackaged)
-                        alert("Library version mismatch: package is '" + message.version + "' but glowscript.version is '" + glowscript.version + "'")
+                    //if (glowscript.version !== message.version && !message.unpackaged) // can't work; at this point glowscript.version is undefined
+                    //    alert("Library version mismatch: package is '" + message.version + "' but glowscript.version is '" + glowscript.version + "'")
 
                     var container = $("#glowscript")
                     if (message.version !== "0.3") container.removeAttr("id")
-
+                    
                     compileAndRun(message.program, container, message.lang, progver)
                     if (message.autoscreenshot)
                         setTimeout(function () {
@@ -122,7 +138,7 @@ function ideRun() {
             if (message.screenshot !== undefined)
                 screenshot(false)
         }
-    }
+    }    
 
     function compileAndRun(program, container, lang, version) {
         try {
@@ -186,8 +202,8 @@ function ideRun() {
     function reportScriptError(program, err) { // This machinery only works on Chrome
     	// TraceKit - Cross browser stack traces: https://github.com/csnover/TraceKit
     	var prog = program.split('\n')
-    	//for(var i=0; i<prog.length; i++) console.log(i, prog[i])
     	var referror = (err.__proto__.name === 'ReferenceError')
+    	//for(var i=0; i<prog.length; i++) console.log(i, prog[i])
     	//console.log('Error', err)
     	//console.log('Stack', err.stack)
     	//console.log('referror', referror)
@@ -231,6 +247,11 @@ function ideRun() {
                     if (caller == 'main') break
 
                 	var line = prog[jsline-1]
+                    if (window.__GSlang == 'javascript') { // Currently unable to embed line numbers in JavaScript programs
+    	                traceback.push(line)
+                        traceback.push("")
+                        break
+                    }
                 	var L = undefined
                 	var end = undefined
                 	for (var c=jschar; c>=0; c--) {  // look for preceding "linenumber";

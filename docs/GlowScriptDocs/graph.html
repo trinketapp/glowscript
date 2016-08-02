@@ -82,8 +82,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;rate(100,wait)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;p.plot(i+5, 3+2*sin(i))<br />
 &nbsp;&nbsp;&nbsp;&nbsp;q.plot(i+5, 3+2*cos(i))      </p>
+      <p class="Normal">It is often the case that skipping points may hardly affect the display but will make graph plotting much faster, in which case it's useful to specify an interval between plotting of points:</p>
+      <p class="attributes"><span class="attribute">interval</span> If interval=10, a point is added to the plot only every 10th time you ask to add a point. If interval is 0, no plot is shown. If interval is -1, no points are skipped.</p>
       <p class="Normal"></p>
-      <p class="Normal"><strong><font color="#0000A0">Deleting an entire gdisplay</font></strong></p>
+      <p class="Normal"><strong><font color="#0000A0">Deleting an entire graph</font></strong></p>
       <p class="Normal">If you say g = graph(), you can delete the entire graph by saying g.delete().</p>
       <p class="Normal">&nbsp;</p>
       <div>
@@ -111,6 +113,7 @@
       <p class="attributes"><span class="attribute">radius</span> Radius in pixels of a scatter circle (default is 3 pixels)</p>
       <p class="attributes"><span class="attribute">delta</span> Width of a bar (default = 1)</p>
       <p class="attributes"><span class="attribute">horizontal</span> true for horizontal bars (default is false, giving vertical bars)</p>
+      <p class="attributes"><span class="attribute">interval</span> Skip points (see discussion above)</p>
       <p class="program"></p>
       <p class="Normal"><strong><font color="#0000A0">Special option for a line series</font></strong></p>
       <p class="Normal">For a line series, if you
@@ -134,9 +137,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xmin=-5, ymin=10          } )</p>
         <p class="Normal">After creating a graph, you can change any of these graph attributes:</p>
         <p class="program">gd.xmin = 4<br />
-          gd.width = 300
-        </p>
-          <p class="Normal">You can have more than one graph window: just create another <span class="attribute"> graph</span>. By default, any graphing objects 
+        gd.width = 300</p>
+        <p class="Normal">You can align a graph to the left or right of another graph or a canvas:</p>
+      <p class="attributes"><span class="attribute">align</span> Set to &quot;left&quot; (graph forced to left side of window), &quot;right&quot; (graph forced to right side of window), or &quot;none&quot; (the default alignment). For example, if you want to place a graph to the right of a canvas, set the canvas align attribute to the string &quot;left&quot; and the graph align attribute to &quot;right&quot;. If the window is too narrow, the object that is on the right will be displayed below the other object.</p>
+      <p class="Normal">You can have more than one graph window: just create another <span class="attribute"> graph</span>. By default, any graphing objects 
             
             created following a <span class="attribute">graph </span> belong to that 
             

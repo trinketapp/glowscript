@@ -84,14 +84,14 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
           <td width="67%"><div align="center"><span class="style3 style4 style5"><font
  color="#000000">VPython</font></span>          </div>
             <p class="centered"><strong>VPython in<br />
-          GlowScript 2.0</strong><strong></strong></p></td>
+          GlowScript 2.1</strong><strong></strong></p></td>
           <td width="33%"><img src="images/bounce.png" alt="materialetc" width="234" height="221" /></td>
         </tr>
       </table>
       <p class="Normal"><span class="style1">Using  VPython to create 3D animations</span></p>
       <p class="Normal">VPython makes it unusually easy to write programs that generate navigable real-time 3D animations. It is based on the Python programming language which is widely used in introductory programming courses thanks to its clean design, and it is also widely used in science and business.</p>
       <p class="Normal">Classic VPython was originated by David Scherer in 2000. In 2011 David Scherer and Bruce Sherwood initiated the development of GlowScript, a similar programming environment but which runs in a browser. In 2014 it became possible to use RapydScript, a programming language very similar to Python, to support VPython programs in  the GlowScript  environment. This
-        documentation describes the GlowScript version of VPython. There is also <a href="../GlowScriptDocs/index.html" target="_blank"><strong>technical documentation</strong></a> about the GlowScript environment, including how to use JavaScript or RapydScript for your programs.</p>
+        documentation describes the GlowScript version of VPython. Here is an <a href="http://matterandinteractions.wordpress.com/2011/09/23/glowscript-3d-animations-in-a-browser/" target="_blank"><strong>overview</strong></a> of the project, and here is a <a href="../GlowScriptDocs/history.html" target="_blank"><strong>log of developments</strong></a>. Here is the <a href="https://github.com/BruceSherwood/glowscript" target="_blank"><strong>open source</strong></a> for this project. There is also <a href="../GlowScriptDocs/index.html" target="_blank"><strong>technical documentation</strong></a> about the GlowScript environment, including how to use JavaScript or RapydScript for your programs.</p>
       <p class="Normal">There is a beta version of a new &quot;Jupyter&quot; VPython originated by John Coady in 2014 and currently under development by John Coady, Ruth Chabay, Bruce Sherwood, and Steve Spicklemire. It runs in a Jupyter notebook and uses GlowScript VPython syntax with standard Python, thereby providing access to standard Python modules. For details see<a href="http://vpython.org" target="_blank"> <strong>vpython.org</strong></a>. Also of interest is  a discussion about plans for the <a href="http://vpython.org/contents/announcements/evolution.html" target="_blank"><strong>future evolution</strong></a> of VPython.</p>
       <p class="Normal">For a quick introduction, see the following YouTube videos. These were created for Classic VPython but are just as useful for learning the more recent versions. </p>
       <blockquote>
@@ -136,9 +136,9 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
         <p class="Normal"><span class="style1 style2"><a href="factorial.html">factorial/combin:</a></span> Special functions used in probability calculations.</p>
         <p class="Normal"><span class="style1 style2"><a href="new_features.html">What's new:</a></span> VPython in GlowScript, plus the history of VPython.. </p>
       </blockquote>
-      <p class="Normal"><strong>Be sure to explore the many GlowScript <a href="http://www.glowscript.org/#/user/GlowScriptDemos/folder/Examples/" target="_blank">example programs</a></strong>, written using JavaScript, CoffeeScript, RapydScript, or VPython. The VPython option is based on the <strong><a href="http://rapydscript.pyjeon.com/" target="_blank">RapydScript</a></strong> Python-to-JavaScript compiler. For most programs, RapydScript is nearly the same as Python, but there are differences which can be seen in the <a href="http://rapydscript.pyjeon.com/" target="_blank">RapydScript documentation</a>.</p>
+      <p class="Normal"><strong>Be sure to explore the many GlowScript <a href="http://www.glowscript.org/#/user/GlowScriptDemos/folder/Examples/" target="_blank">example programs</a></strong>, written using JavaScript, RapydScript, or VPython. The VPython option is based on the <strong><a href="https://github.com/atsepkov/RapydScript" target="_blank">RapydScript</a></strong> Python-to-JavaScript compiler. For most programs, RapydScript is nearly the same as Python, but there are differences which can be seen in the <a href="https://github.com/atsepkov/RapydScript" target="_blank">RapydScript documentation</a>.</p>
       <p class="Normal"><span class="style1">CAUTION</span></p>
-      <p class="Normal">Do not use &quot;wait&quot; as a variable name. All GlowScript languages (VPython, RapydScrpt, CoffeeScript, JavaScript) use &quot;wait&quot; as a special signal for the compilation process. In the VPython case this signal is inserted for you where needed.</p>
+      <p class="Normal">Do not use &quot;wait&quot; as a variable name. All GlowScript languages (VPython, RapydScrpt, JavaScript) use &quot;wait&quot; as a special signal for the compilation process. In the VPython case this signal is inserted for you where needed.</p>
       <p class="Normal">&nbsp;</p>
       <p class="Normal"><span class="style1">For experienced programmers</span></p>
       <p class="Normal">As a convenience to novice programmers to provide everything that is needed to get started, GlowScript by default imports all of the VPython features and includes <a href="math.html">standard math functions</a> such as sqrt.</p>
@@ -149,7 +149,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
 <p class="Normal">The documentation is written as though &quot;from visual import *&quot; were present.</p>
       <div> </div>
       <p class="Normal"><span class="style1">For those who have used Classic VPython</span></p>
-      <p class="Normal">The difference between RapydScript and VPython programs in the GlowScript context is that the VPython option attempts to mimic exactly the syntax and semantics of Classic VPython programs, whereas the RapydScript option implements the same semantics for 3D objects as that of JavaScript and CoffeeScript programs. For example, in a RapydScript program the sphere object has a size attribute but no radius attribute, and like box, the default size of the sphere is 1x1x1. Also, changing the length of the axis in a RapydScript program has no effect on the size (except for an arrow, which has a special axis_and_length attribute), but in a VPython program, as in Classic VPython, changing the length of the axis also changes the length of the object (the first component of the object's size).</p>
+      <p class="Normal">The difference between RapydScript and VPython programs in the GlowScript context is that the VPython option attempts to mimic exactly the syntax and semantics of Classic VPython programs, whereas the RapydScript option implements the same semantics for 3D objects as that of JavaScript programs. For example, in a RapydScript program the sphere object has a size attribute but no radius attribute, and like box, the default size of the sphere is 1x1x1. Also, changing the length of the axis in a RapydScript program has no effect on the size (except for an arrow, which has a special axis_and_length attribute), but in a VPython program, as in Classic VPython, changing the length of the axis also changes the length of the object (the first component of the object's size).</p>
       <p class="Normal">GlowScript by default processes VPython programs as though they had the following  statements at the start of the program (which you don't need to include; they will be ignored):</p>
       <p class="program">from __future__ import division, print_function<br />
         from visual import *<br />
@@ -193,7 +193,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
   &nbsp;&nbsp;&nbsp;&nbsp;Bruno Jouhier (Streamline: <a href="https://github.com/Sage/streamlinejs" target="_blank">https://github.com/Sage/streamlinejs</a>), and<br />
   &nbsp;&nbsp;&nbsp;&nbsp;Marijn Haverbeke (Acorn.js: <a href="https://github.com/marijnh" target="_blank">https://github.com/marijnh</a>).<br />
   Supporting the VPython API in a browser is possible thanks to the work of<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;Alexander Tsepkov (RapydScript: <a href="http://www.rapydscript.com/" target="_blank">http://www.rapydscript.com</a>) and<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;Alexander Tsepkov (RapydScript: <a href="https://github.com/atsepkov/RapydScript" target="_blank">https://github.com/atsepkov/RapydScript</a>) and<br />
   &nbsp;&nbsp;&nbsp;&nbsp;Charles Law (browser-based RapydScript: <a href="https://github.com/charleslaw/RapydScript_web" target="_blank">https://github.com/charleslaw/RapydScript_web</a>).</p>
 <p class="Normal">When the GlowScript project was launched in 2011 by David Scherer and Bruce Sherwood,<br />
 Scherer implemented operator overloading and synchronous code using libraries existing at that time. In 2015 it became necessary to upgrade to newer libraries because compilation failed on some browsers</p>
@@ -201,7 +201,8 @@ Scherer implemented operator overloading and synchronous code using libraries ex
       <div>
         <p class="Normal">VPython documentation was produced by Ruth Chabay,
     David Scherer, and Bruce Sherwood.</p>
-  </div>
+        <p class="Normal"><a href="http://students.studybay.com/?p=336" target="_blank">Translation into Armenian</a> by Gajk Melikyan.</p>
+      </div>
     <!-- InstanceEndEditable --></td>
   </tr>
   <tr>
