@@ -9,12 +9,11 @@ var gulp   = require('gulp')
   , version
   , glowscript_libraries;
 
-version = '2.0.1';
+version = '2.1.1';
 
 glowscript_libraries = {
   "glow": [
-    "lib/jquery/2.0/jquery.mousewheel.js",
-    "lib/jquery/2.0/jquery.ui.touch-punch.min.js",
+    "lib/jquery/2.1/jquery.mousewheel.js",
     "lib/flot/jquery.flot.min.js",
     "lib/flot/jquery.flot.crosshair_GS.js",
     "lib/glMatrix.js",
@@ -29,11 +28,15 @@ glowscript_libraries = {
     "lib/glow/graph.js",
     "lib/glow/color.js",
     "lib/glow/primitives.js",
+    "lib/glow/poly2tri.js",
+    "lib/glow/opentype.js",
+    "lib/glow/extrude.js",
     "lib/glow/api_misc.js",
     "lib/glow/shaders.gen.js",
     "lib/transform-all.js"
   ],
   "compiler": [
+    "lib/glow/opentype.js",
     "lib/compiler.js",
     "lib/papercomp.js",
     "lib/transform-all.js",
@@ -44,6 +47,7 @@ glowscript_libraries = {
     "lib/rapydscript/stdlib.js"
   ],
   "RScompiler": [
+    "lib/glow/opentype.js",
     "lib/compiler.js",
     "lib/papercomp.js",
     "lib/transform-all.js",

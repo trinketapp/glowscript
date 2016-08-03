@@ -71,7 +71,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
             giving it a name such as <span class="attribute">rod</span>, you can't refer 
             to it later. This doesn't matter if you never intend to modify the object.</p>
           <p class="Normal"> Since we didn't specify a color, the cylinder will be the 
-            current &quot;foreground&quot; color (see <a href="display.html">Controlling 
+            current &quot;foreground&quot; color (see <a href="canvas.html">Controlling 
               One or More VPython Canvases</a>). The default foreground color is 
             white. After creating the cylinder, you can change its color:</p>
 
@@ -91,13 +91,12 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
           <p class="attributes"> <font color="#FF0000" class="attribute">pos</font> Position: the center of one end of the cylinder; default = vector(0,0,0)<br />
   </p>
           <p class="attributes"> <font color="#FF0000">axis</font> The axis points from 
-            pos to the other end of the cylinder, default = vector(1,0,0). Setting the axis affects length:</p>
-          <p class="attributes"> <span class="attribute">length</span> Length of axis; 
-            if not specified, axis determines the length, default = 1<br />
-            If length is specified, it overrides the length given by axis</p>
+        pos to the other end of the cylinder, default = vector(1,0,0). Setting the axis makes  <span class="attribute">length</span> equal  to the magnitude of the axis.</p>
+          <p class="attributes"> <span class="attribute">length</span> Length of axis and x component of size; default is 1. 
+            Setting the length makes the magnitude of the axis equal to the length.</p>
           <p class="attributes"> <span class="attribute">radius</span> The radius of 
             the cylinder, default = 1</p>
-          <p class="attributes"> <span class="attribute">size</span> Instead of specifying length and radius, you can set size=vector(length,height,width), which means that the cross section of the cylinder can be elliptical, which is not currently possible in classic VPython</p>
+          <p class="attributes"> <span class="attribute">size</span> Instead of specifying length and radius, you can set size=vector(length,height,width), which means that the cross section of the cylinder can be elliptical, which is not currently possible in classic VPython. Setting size makes the magnitude of axis be equal to the x component of the size (the length).</p>
           <p class="attributes"> <span class="attribute">color</span> Color of object, 
             as a red-green-blue (RGB) triple: vector(1,0,0) is pure red, default = vector(1,1,1), 
             which is color.white</p>
@@ -117,12 +116,13 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
             for cylinder, arrow, cone, and pyramid corresponds to one end of the object, 
             whereas for a box, sphere, or ring it corresponds to the center of the object.  </p>
           <p class="Normal">If you include <span class="attribute">make_trail=True</span> when you create the object, a trail will be left behind the object as you move it. For related options, see <a href="trail.html"><strong>Leaving a Trail</strong></a>.</p>
+          <p class="Normal">See <a href="rotation.html"><strong>Rotating an Object</strong></a> for an easy way to change the orientation of an object.</p>
           <p class="Normal">See description of <a href="options.html">Additional
               Attributes</a> available
             for all 3D display objects.</p>
           <p class="Normal"> When you start a VPython program, for convenience VPython 
             creates a canvas and names it <span class="attribute">scene</span>. 
-            By default, objects that you create go into that canvas. See <a href="display.html">Controlling 
+            By default, objects that you create go into that canvas. See <a href="canvas.html">Controlling 
               One or More VPython Display Windows</a> later in this reference for how you 
             can create additional canvases and place objects in them.</p>
           <p class="Normal"><br />

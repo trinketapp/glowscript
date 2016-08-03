@@ -63,7 +63,7 @@ $(function () {
         }
     }
     
-    parseVersionHeader.defaultVersion = "2.0"
+    parseVersionHeader.defaultVersion = "2.1"
     parseVersionHeader.defaultHeader = "GlowScript " + parseVersionHeader.defaultVersion+' VPython'
     parseVersionHeader.errorMessage = "GlowScript " + parseVersionHeader.defaultVersion
     // Map each version that can be loaded to a packaged version (usually itself), or "unpackaged" if it is the current development version
@@ -77,13 +77,16 @@ $(function () {
         "1.0": "1.0",
         "1.1": "1.1",
         "2.0": "2.0",
+        "2.1": "2.1",
         "0.4dev" : "0.4",
         "0.5dev" : "0.5",
         "0.6dev" : "0.6",
         "0.7dev" : "0.7",
         "1.0dev" : "1.0",
         "1.1dev" : "1.1",
-        "2.1dev" : "unpackaged",
+        "2.0dev" : "2.0",
+        "2.1dev" : "2.1",
+        "2.2dev" : "unpackaged",
     }
 
     /******** Functions to talk to the API on the server ***********/
@@ -828,7 +831,16 @@ $(function () {
                         alert("Failed to load compiler from package: " + compiler_url)
                         return
                     }
-                    var embedScript = window.glowscript_compile(header.source, {lang: header.lang, version: header.version.substr(0,3)})
+                    
+                    // Look for text object in program
+                	// findtext finds "...text  (....." and findstart finds "text  (...." at start of program
+                	var findtext = /[\n\W\s]text[\ ]*\(/
+	                var findstart = /^text[\ ]*\(/
+                	var loadfonts = findtext.exec(header.source)
+	                if (!loadfonts) loadfonts = findstart.exec(header.source)
+
+					var embedScript = window.glowscript_compile(header.source,
+                    		{lang: header.lang, version: header.version.substr(0,3), loadfonts: loadfonts})
                     var divid = "glowscript"
                     var remove = header.version==='0.3' ? '' : '.removeAttr("id")'
                     var main
@@ -859,16 +871,16 @@ $(function () {
                     var embedHTML = (
                         '<div id="' + divid + '" class="glowscript">\n' + 
                         '<link type="text/css" href="http://www.glowscript.org/css/redmond/' + verdir + '/jquery-ui.custom.css" rel="stylesheet" />\n' + 
-                        '<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">\n' + 
+                        '<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css" />\n' + 
                         '<link type="text/css" href="http://www.glowscript.org/css/ide.css" rel="stylesheet" />\n' + 
                         '<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>\n' +
                         '<script type="text/javascript" src="http://www.glowscript.org/lib/jquery/' + verdir + '/jquery.min.js"></script>\n' +
                         '<script type="text/javascript" src="http://www.glowscript.org/lib/jquery/' + verdir + '/jquery-ui.custom.min.js"></script>\n' +
                         '<script type="text/javascript" src="http://www.glowscript.org/package/glow.' + header.version + '.min.js"></script>\n' +
                         runner +
-                        '<script type="text/javascript">\n' +
+                        '<script type="text/javascript"><!--//--><![CDATA[//><!--\n' +
                         embedScript +
-                        '\n</script>' +
+                        '\n//--><!]]></script>' +
                         '\n</div>');
                     page.find(".embedSource").text( embedHTML )
                 })
@@ -944,7 +956,7 @@ $(function () {
 	            var editor = ace.edit(page.find(".program-editor").get(0));
 	            window.editor = editor
 	            customACEMode(lang, progData.source)
-	            var mode = require("ace/mode/visualjs").Mode
+	            var mode = ace_require("ace/mode/visualjs").Mode
 		        editor.getSession().setMode(new mode())
 	            editor.setTheme({ cssClass: "ace-custom" })
 	            editor.getSession().setValue(progData.source)
@@ -966,7 +978,7 @@ $(function () {
         })
     }
     
-    // NOTE: We use the "require" function found in ace.js
+    // NOTE: We use the "ace_require" function found in ace.js
 
     /*********** Customization of the ACE editor *************/
     // See https://github.com/ajaxorg/ace/wiki/Creating-or-Extending-an-Edit-Mode
@@ -1006,10 +1018,10 @@ $(function () {
         // The "//" at the end of lintPrefix comments out the line "GlowScript X.Y", hence ignored by the worker looking at JavaScript syntax
         var lintPrefix = "/*jslint asi:true, undef:true*/ /*global wait " + globals.join(" ") + "*/\n//"
 
-        define('ace/mode/visualjs_highlight_rules', function (require, exports, module) {
-            var oop = require("ace/lib/oop")
-            if (lang == 'coffeescript' || lang == 'rapydscript' || lang == 'vpython') var Rules = require("ace/mode/coffee_highlight_rules").CoffeeHighlightRules
-            else var Rules = require("ace/mode/javascript_highlight_rules").JavaScriptHighlightRules
+        define('ace/mode/visualjs_highlight_rules', function (ace_require, exports, module) {
+            var oop = ace_require("ace/lib/oop")
+            if (lang == 'coffeescript' || lang == 'rapydscript' || lang == 'vpython') var Rules = ace_require("ace/mode/coffee_highlight_rules").CoffeeHighlightRules
+            else var Rules = ace_require("ace/mode/javascript_highlight_rules").JavaScriptHighlightRules
 
             var VisualHighlightRules = function () {
                 this.$rules = (new Rules()).getRules()
@@ -1025,13 +1037,13 @@ $(function () {
         
         
         //------------------------------------------------------------------------------------------------------
-        define('ace/mode/visualjs', function (require, exports, module) {
-            var oop = require("ace/lib/oop")
-            if (lang == 'rapydscript' || lang == 'vpython') var BaseMode = require("ace/mode/python").Mode
-            else var BaseMode = require("ace/mode/javascript").Mode
-            var Tokenizer = require("ace/tokenizer").Tokenizer
-            var VisualHighlightRules = require("ace/mode/visualjs_highlight_rules").VisualHighlightRules
-            var WorkerClient = require("ace/worker/worker_client").WorkerClient // *****************************************************
+        define('ace/mode/visualjs', function (ace_require, exports, module) {
+            var oop = ace_require("ace/lib/oop")
+            if (lang == 'rapydscript' || lang == 'vpython') var BaseMode = ace_require("ace/mode/python").Mode
+            else var BaseMode = ace_require("ace/mode/javascript").Mode
+            var Tokenizer = ace_require("ace/tokenizer").Tokenizer
+            var VisualHighlightRules = ace_require("ace/mode/visualjs_highlight_rules").VisualHighlightRules
+            var WorkerClient = ace_require("ace/worker/worker_client").WorkerClient // *****************************************************
 
             var Mode = function () {
                 BaseMode.call(this)

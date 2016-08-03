@@ -1,5 +1,9 @@
 from __future__ import print_function, division
 
+# This is the original Python 2.7 build file, used in building GlowScript
+# according to the scheme described in docs/MakingNewVersion.txt.
+# A more sophisticated build program is build_cli.py contributed by Iblis Lin.
+
 """This python program converts various parts of glowscript from the most
 convenient format for modification into the most convenient format for
 deployment.
@@ -24,13 +28,12 @@ shader_file.append("}});")
 shader_file = "\n".join(shader_file)
 open("lib/glow/shaders.gen.js", "wb").write(shader_file)
 
-version = "2.1dev"
+version = "2.1"
 # TODO: Extract this information from run.js
 
 glowscript_libraries = {
     "run": [
         "../lib/jquery/"+version+"/jquery.mousewheel.js",
-        "../lib/jquery/"+version+"/jquery.ui.touch-punch.min.js",
         "../lib/flot/jquery.flot.min.js",
         "../lib/flot/jquery.flot.crosshair_GS.js",
         "../lib/glMatrix.js",
@@ -45,20 +48,26 @@ glowscript_libraries = {
         "../lib/glow/graph.js",
         "../lib/glow/color.js",
         "../lib/glow/primitives.js",
+        "../lib/glow/poly2tri.js",
+        "../lib/glow/opentype.js",
+        "../lib/glow/extrude.js",
         "../lib/glow/api_misc.js",
         "../lib/glow/shaders.gen.js",
         "../lib/transform-all.js" # needed for running programs embedded in other web sites
         ],
     "compile": [
+        "../lib/glow/opentype.js",
         "../lib/compiler.js",
         "../lib/papercomp.js",
         "../lib/transform-all.js",
-        "../lib/coffee-script.js"],
+        "../lib/coffee-script.js"
+        ],
     "RSrun": [
         "../lib/rapydscript/baselib.js",
         "../lib/rapydscript/stdlib.js"
         ],
     "RScompile": [
+        "../lib/glow/opentype.js",
         "../lib/compiler.js",
         "../lib/papercomp.js",
         "../lib/transform-all.js",
