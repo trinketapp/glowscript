@@ -9,13 +9,15 @@ var gulp   = require('gulp')
   , version
   , glowscript_libraries;
 
-version = '2.1.1';
+version = '2.3.1';
 
 glowscript_libraries = {
   "glow": [
     "lib/jquery/2.1/jquery.mousewheel.js",
     "lib/flot/jquery.flot.min.js",
     "lib/flot/jquery.flot.crosshair_GS.js",
+    "lib/opentype/poly2tri.js",
+    "lib/opentype/opentype.js",
     "lib/glMatrix.js",
     "lib/webgl-utils.js",
     "lib/glow/property.js",
@@ -27,35 +29,29 @@ glowscript_libraries = {
     "lib/glow/WebGLRenderer.js",
     "lib/glow/graph.js",
     "lib/glow/color.js",
+    "lib/glow/shapespaths.js",
     "lib/glow/primitives.js",
-    "lib/glow/poly2tri.js",
-    "lib/glow/opentype.js",
-    "lib/glow/extrude.js",
     "lib/glow/api_misc.js",
+    "lib/glow/extrude.js",
     "lib/glow/shaders.gen.js",
-    "lib/transform-all.js"
+    "lib/compiling/transform.js"
   ],
   "compiler": [
-    "lib/glow/opentype.js",
-    "lib/compiler.js",
-    "lib/papercomp.js",
-    "lib/transform-all.js",
-    "lib/coffee-script.js"
+    "lib/coffee-script.js",
+    "lib/compiling/GScompiler.js",
+    "lib/compiling/acorn.es.js",
+    "lib/compiling/papercomp.js",
+    "lib/compiling/transform.js"
   ],
   "RSrun": [
-    "lib/rapydscript/baselib.js",
-    "lib/rapydscript/stdlib.js"
+    "lib/rapydscript/runtime.js"
   ],
   "RScompiler": [
-    "lib/glow/opentype.js",
-    "lib/compiler.js",
-    "lib/papercomp.js",
-    "lib/transform-all.js",
-    "lib/rapydscript/utils.js",
-    "lib/rapydscript/ast.js",
-    "lib/rapydscript/output.js",
-    "lib/rapydscript/parse.js",
-    "lib/rapydscript/baselib.js"
+    "lib/compiling/GScompiler.js",
+    "lib/rapydscript/compiler.js",
+    "lib/compiling/acorn.es.js",
+    "lib/compiling/papercomp.js",
+    "lib/compiling/transform.js"
   ]
 };
 
