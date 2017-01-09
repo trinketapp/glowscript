@@ -63,7 +63,7 @@ $(function () {
         }
     }
     
-    parseVersionHeader.defaultVersion = "2.1"
+    parseVersionHeader.defaultVersion = "2.3"
     parseVersionHeader.defaultHeader = "GlowScript " + parseVersionHeader.defaultVersion+' VPython'
     parseVersionHeader.errorMessage = "GlowScript " + parseVersionHeader.defaultVersion
     // Map each version that can be loaded to a packaged version (usually itself), or "unpackaged" if it is the current development version
@@ -78,6 +78,8 @@ $(function () {
         "1.1": "1.1",
         "2.0": "2.0",
         "2.1": "2.1",
+        "2.2": "2.2",
+        "2.3": "2.3",
         "0.4dev" : "0.4",
         "0.5dev" : "0.5",
         "0.6dev" : "0.6",
@@ -86,7 +88,9 @@ $(function () {
         "1.1dev" : "1.1",
         "2.0dev" : "2.0",
         "2.1dev" : "2.1",
-        "2.2dev" : "unpackaged",
+        "2.2dev" : "2.2",
+        "2.3dev" : "2.3",
+        "2.4dev" : "unpackaged",
     }
 
     /******** Functions to talk to the API on the server ***********/
@@ -831,22 +835,18 @@ $(function () {
                         alert("Failed to load compiler from package: " + compiler_url)
                         return
                     }
-                    
-                    // Look for text object in program
-                	// findtext finds "...text  (....." and findstart finds "text  (...." at start of program
-                	var findtext = /[\n\W\s]text[\ ]*\(/
-	                var findstart = /^text[\ ]*\(/
-                	var loadfonts = findtext.exec(header.source)
-	                if (!loadfonts) loadfonts = findstart.exec(header.source)
+	                
+                    // Look for mention of MathJax in program; don't import it if it's not used
+                    var mathjax = ''
+                    if (header.source.indexOf('MathJax') >= 0)
+                    	mathjax = '<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>\n'
 
 					var embedScript = window.glowscript_compile(header.source,
-                    		{lang: header.lang, version: header.version.substr(0,3), loadfonts: loadfonts})
+                    		{lang: header.lang, version: header.version.substr(0,3), run: false})
                     var divid = "glowscript"
                     var remove = header.version==='0.3' ? '' : '.removeAttr("id")'
                     var main
-                    var fsearch = ' (function()'
-                    var where = embedScript.indexOf(fsearch)
-                    if (where > 0) {
+                    if (header.lang == 'coffeescript') {
                         // The CoffeeScript -> JavaScript converter wraps the code in an extra protective layer, in addition
                         // to the wrapper imposed by GlowScript. The following code effectively unwraps the extra layer.
                         // There's probably a far more elegant way to deal with this....
@@ -864,16 +864,17 @@ $(function () {
                     embedScript = embedScript.replace("</", "<\\/") // escape anything that could be a close script tag... hopefully this sequence only occurs in strings!
                     var verdir = "bef1.1"
                     if (v == 1.1) verdir = "1.1"
+                    else if (v >= 2.2) verdir = "2.1"
                     else verdir = header.version.substr(0,3)
                     var runner = ''
                     if (header.lang == 'vpython' || header.lang == 'rapydscript') 
-                    	runner = '<script type="text/javascript" src="http://www.glowscript.org/package/RSrun.' + header.version + '.min.js"></script>\n'
+                    	runner = '<script type="text/javascript" src="http://www.glowscript.org/package/RSrun.' + header.version + '.min.js"></script>\n'  
                     var embedHTML = (
                         '<div id="' + divid + '" class="glowscript">\n' + 
                         '<link type="text/css" href="http://www.glowscript.org/css/redmond/' + verdir + '/jquery-ui.custom.css" rel="stylesheet" />\n' + 
                         '<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css" />\n' + 
                         '<link type="text/css" href="http://www.glowscript.org/css/ide.css" rel="stylesheet" />\n' + 
-                        '<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>\n' +
+                        mathjax +
                         '<script type="text/javascript" src="http://www.glowscript.org/lib/jquery/' + verdir + '/jquery.min.js"></script>\n' +
                         '<script type="text/javascript" src="http://www.glowscript.org/lib/jquery/' + verdir + '/jquery-ui.custom.min.js"></script>\n' +
                         '<script type="text/javascript" src="http://www.glowscript.org/package/glow.' + header.version + '.min.js"></script>\n' +

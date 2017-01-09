@@ -57,21 +57,22 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
       </table>
       <div></div>
       <div class="Normal">
-        <p class="Normal">Tthe example shown above, <a href="http://www.glowscript.org/#/user/GlowScriptDemos/folder/Examples/program/ButtonsSlidersMenus-VPython" target="_blank"><strong>ButtonsSlidersMenus-VPython</strong></a>, contains buttons, a slider, and a dropdown menu. The example program <a href="http://www.glowscript.org/#/user/GlowScriptDemos/folder/Examples/program/Color-RGB-HSV-VPython" target="_blank"><strong>Color-RGB-HSV-VPython</strong></a><strong></strong> uses six sliders to explore RGB and HSV colors. Here is the basic idea for using button, radio buttion, checkbox, slider, and menu:</p>
+        <p class="Normal">Tthe example shown above, <a href="http://www.glowscript.org/#/user/GlowScriptDemos/folder/Examples/program/ButtonsSlidersMenus-VPython" target="_blank"><strong>ButtonsSlidersMenus-VPython</strong></a>, contains buttons, a slider, radio buttons,  a drop-down menu, and a check box. The example program <a href="http://www.glowscript.org/#/user/GlowScriptDemos/folder/Examples/program/Color-RGB-HSV-VPython" target="_blank"><strong>Color-RGB-HSV-VPython</strong></a><strong></strong> uses six sliders to explore RGB and HSV colors. </p>
+        <p class="Normal">Here is the basic idea for using button, radio buttion, checkbox, slider, and menu:</p>
         <p class="program">box()<br />
           def B(b):<br />
           &nbsp;&nbsp;&nbsp;&nbsp;print(&quot;The button  said this: &quot;, b.text)<br />
-          button( text='Click me!', bind=B )<br />
+          button( bind=B, text='Click me!' )<br />
           scene.append_to_caption('\n\n')<br />
           <br />
 def R(r):<br />
-&nbsp;&nbsp;&nbsp;&nbsp;r.checked = not r.checked<br />
-radio( bind=R )<br />
+&nbsp;&nbsp;&nbsp;&nbsp;print(r.checked) # alternates<br />
+radio(bind=R, text='Run') # text to right of button<br />
 scene.append_to_caption('\n\n')<br />
 <br />
 def C(r):<br />
-&nbsp;&nbsp;&nbsp;&nbsp;r.checked = not r.checked<br />
-checkbox( bind=C )<br />
+&nbsp;&nbsp;&nbsp;&nbsp;print(r.checked) # alternates<br />
+checkbox(bind=C, text='Run') # text to right of checkbox<br />
 scene.append_to_caption('\n\n')<br />
           <br />
           def S(s):
@@ -84,16 +85,16 @@ scene.append_to_caption('\n\n')<br />
 &nbsp;&nbsp;&nbsp;          print(m.select)<br />
 menu( choices=['cat', 'dog', 'horse'], bind=M )</p>
 <p class="Normal">By default, widgets are appended to scene.caption_anchor, below the canvas. The append_to_caption statements above cause the radio button to appear below the button, the checkbox to appear below the radio button, the slider to appear below the checkbox, and the dropdown menu to appear below the slider. If you specify pos=scene.title_anchor, the widget will appear above the canvas.</p>
-<p class="Normal">The function specified by &quot;bind&quot; is called when the user clicks a button or radio button or checkbox, drags a slider, or chooses a menu option. The function is sent a pointer to the widget, which lets you reference or change information about the widget.</p>
-<p class="Normal"><strong><font color="#0000a0">Adding your own attributes</font></strong></p>
+<p class="Normal">The function specified by &quot;bind&quot; is called when the user clicks a button or radio button or checkbox, drags a slider, or chooses a menu option. The function is sent a pointer to the widget, which lets you reference or change information about the widget. For the radio button and checkbox, the (optional) text is placed one space to the right of the widget.</p>
+<p class="Normal"><strong><font color="#0000a0">Adding your own attributes </font></strong></p>
 <div class="Normal"></div>
 <p class="Normal">As with other objects, you can add your own attributes to those listed below. For example, you might have three buttons all bound to the same function but with different attributes &quot;id=1&quot;, &quot;id=2&quot;, and &quot;id=3&quot;. When the function is called by the user clicking the button, you could decide what to do based on the value of the &quot;id&quot; attribute you created.</p>
 <p class="Normal"><strong><font color="#0000a0">Buttons</font></strong></p>
 <div class="Normal"></div>
-<p class="Normal">Here are the attributes of a <strong>button</strong> widget:</p>
+<p class="Normal">A space is placed to the right of the button, so that there is always some space between a button and an adjacent widget. Here are the attributes of a <strong>button</strong> widget:</p>
 <p class="attributes"> <font color="#FF0000" class="attribute">pos</font> Position to which to append the widget (see &quot;Appending to anchor points&quot; below). Cannot be changed after creating the button.</p>
 <p class="attributes"> <span class="attribute">text</span> The text shown on the button. Can be changed at any time. The text can contain html directives. For example '&lt;b&gt;Run&lt;/b&gt;' will display 'Run' in bold.</p>
-<p class="attributes"> <span class="attribute">color</span> The color of the text shown on the button. Can be changed at any time.</p>
+<p class="attributes"> <span class="attribute">textcolor</span> The color of the text shown on the button. Can be changed at any time.</p>
 <p class="attributes"> <span class="attribute">background</span> The background color of the button. Can be changed at any time.</p>
 <p class="attributes"> <font color="#FF0000">bind</font> The name of the function to be called when the button is clicked. Cannot be changed after creating the button.</p>
 <p class="attributes"><font color="#FF0000">disabled</font> If True, the button text is grayed out and the button is inactive. Can be changed at any time.</p>
@@ -102,13 +103,15 @@ menu( choices=['cat', 'dog', 'horse'], bind=M )</p>
 <p class="Header"></p>
 <div class="Normal"></div>
 <p class="Normal">Radio buttons are often used in a group of two or more, in which you arrange that only one is checked at any time. Here are the attributes of a <strong>radio</strong> widget (a radio button):</p>
-<p class="attributes"> <font color="#FF0000" class="attribute">pos</font> Position to which to append the widget (see &quot;Appending to anchor points&quot; below). Cannot be changed after creating the radio button.</p>
+<p class="attributes"> <font color="#FF0000" class="attribute">pos</font> Position to which to append the widget (see &quot;Appending to anchor points&quot; below). Cannot be changed after creating the radio button. </p>
+<p class="attributes"><span class="attribute">text</span> The text shown one space to the right of the radio button. Can be changed at any time. The text can contain html directives. For example '&lt;b&gt;Run&lt;/b&gt;' will display 'Run' in bold. You may wish to add some spaces to the end of the text to separate the text from an adjacent widget.</p>
 <p class="attributes"> <font color="#FF0000">bind</font> The name of the function to be called when the radio button is clicked. Cannot be changed after creating the radio button.</p>
 <p class="attributes"><font color="#FF0000">checked</font> If True, the radio button is highlighted; default is False. Can be changed at any time.</p>
 <p class="Normal"></p>
 <p class="Header"><strong><font color="#0000a0">Checkboxes</font></strong></p>
-<p class="Header">Here are the attributes of a <strong>checkbox</strong> widget:</p>
+<p class="Normal">Here are the attributes of a <strong>checkbox</strong> widget:</p>
 <p class="attributes"> <font color="#FF0000" class="attribute">pos</font> Position to which to append the widget (see &quot;Appending to anchor points&quot; below). Cannot be changed after creating the checkbox.</p>
+<p class="attributes"><span class="attribute">text</span> The text shown one space to the right of the checkbox. Can be changed at any time. The text can contain html directives. For example '&lt;b&gt;Run&lt;/b&gt;' will display 'Run' in bold. You may wish to add some spaces to the end of the text to separate the text from an adjacent widget.</p>
 <p class="attributes"> <font color="#FF0000">bind</font> The name of the function to be called when the checkbox is clicked. Cannot be changed after creating the checkbox.</p>
 <p class="attributes"><font color="#FF0000">checked</font> If True, the checkbox is highlighted; default is False. Can be changed at any time.</p>
 <p class="Normal"></p>
@@ -121,7 +124,7 @@ menu( choices=['cat', 'dog', 'horse'], bind=M )</p>
 <p class="attributes"> <span class="attribute">min</span> The minimum value of the slider; default is 0. Cannot be changed after creating the slider.</p>
 <p class="attributes"> <span class="attribute">max</span> The maximum value of the slider; default is 1. Cannot be changed after creating the slider.</p>
 <p class="attributes"> <span class="attribute">step</span> The step size when clicking or dragging. The default is 0.001*(max-min). Cannot be changed after creating the slider.</p>
-<p class="attributes"> <span class="attribute">value</span> The current value (between min and max) of the slider. Can be set by program as well as by user motions.</p>
+<p class="attributes"> <span class="attribute">value</span> The current value (between min and max) of the slider. Can be set by program as well as by user motions. When you set the value by program (slider.value = something), the bind function is NOT executed, which prevents confusion that would arise in situations such as the <a href="http://www.glowscript.org/#/user/GlowScriptDemos/folder/Examples/program/Color-RGB-HSV-VPython" target="_blank">RGB-HSV demo program</a>, where a user change in a slider causes program changes to the values of other sliders.</p>
 <p class="attributes"> <span class="attribute">length</span> The length of the slider, whether vertical or horizontal; default is 400 (pixels). Cannot be changed after creating the slider.</p>
 <p class="attributes"> <span class="attribute">width</span> The width of the slider, whether vertical or horizontal; default is 10 (pixels). Cannot be changed after creating the slider.</p>
 <p class="attributes"> <span class="attribute">left</span> Margin to the left of the slider; default is 0 (pixels). Cannot be changed after creating the slider.</p>
@@ -132,12 +135,12 @@ menu( choices=['cat', 'dog', 'horse'], bind=M )</p>
 <p class="Normal"></p>
 <p class="Header"><strong><font color="#0000a0">Menus</font></strong></p>
 <div class="Normal"></div>
-<p class="Normal">Here are the attributes of a  <strong>menu</strong> widget:</p>
+<p class="Normal">A space is placed to the right of the menu, so that there is always some space between a menu and an adjacent widget. Here are the attributes of a  <strong>menu</strong> widget:</p>
 <p class="attributes"> <font color="#FF0000" class="attribute">pos</font> Position to which to append the widget (see &quot;Appending to anchor points&quot; below). Cannot be changed after creating the menu.</p>
 <p class="attributes"> <span class="attribute">choices</span> A list of strings to appear on the menu, such as ['cat', 'dog', 'horse']. Cannot be changed after creating the menu.</p>
 <p class="attributes"><font color="#FF0000">selected</font> The chosen string, such as 'dog'.  Can be set by program as well as by user choice. </p>
+<p class="attributes"><font color="#FF0000">index</font> The position of the chosen string in the choices list, starting from zero.  Can be set by program as well as by user choice.</p>
 <p class="attributes"> <font color="#FF0000">bind</font> The name of the function to be called when a menu item is chosen. Cannot be changed after creating the menu.</p>
-<p class="attributes"><font color="#FF0000">align</font> If 'left' (the default), the slider is displayed at the left of the window; if 'right', the slider is displayed at the right of the window. Cannot be changed after creating the slider.</p>
 <p class="Normal"></p>
 <p class="Header"><strong><font color="#0000a0">Appending to anchor points</font></strong></p>
         <div class="Normal"></div>
@@ -149,7 +152,7 @@ menu( choices=['cat', 'dog', 'horse'], bind=M )</p>
         <p class="Normal"></p>
         <p class="Header"><strong><font color="#0000a0">Positioning widgets</font></strong></p>
         <div class="Normal"></div>
-        <p class="Normal">When you create a widget it is appended to the anchor point. If you create three button objects they will be placed next to each other. If you want some space between them, and they are in the caption, execute scene.append_to_caption('&nbsp;&nbsp;&nbsp;&nbsp;') between the creations of the buttons.</p>
+        <p class="Normal">When you create a widget it is appended to the anchor point. As explained above, a space is placed after button and menu widgets to separate them. If you want more space between them, and they are in the caption, execute scene.append_to_caption('&nbsp;&nbsp;&nbsp;&nbsp;') between the creations of the buttons. In the case of checkbox and radio widgets, you can increase the space between it and an adjacent widget simply by adding extra spaces to the end of the checkbox or radio text.</p>
         <p class="Normal">If you want to provide a margin of 20 pixels between adjacent vertical sliders, one method is to set left=20 for all but the leftmost slider.</p>
         <p class="Normal">To provide vertical spacing between widgets in the caption, execute something like scene.append_to_caption('\n\n') between the creations of the widgets. The string &quot;\n&quot; represents a new line (a &quot;carriage return&quot;).</p>
         <div> </div>
