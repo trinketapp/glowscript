@@ -63,7 +63,7 @@ $(function () {
         }
     }
     
-    parseVersionHeader.defaultVersion = "2.3"
+    parseVersionHeader.defaultVersion = "2.5"
     parseVersionHeader.defaultHeader = "GlowScript " + parseVersionHeader.defaultVersion+' VPython'
     parseVersionHeader.errorMessage = "GlowScript " + parseVersionHeader.defaultVersion
     // Map each version that can be loaded to a packaged version (usually itself), or "unpackaged" if it is the current development version
@@ -80,6 +80,8 @@ $(function () {
         "2.1": "2.1",
         "2.2": "2.2",
         "2.3": "2.3",
+        "2.4": "2.4",
+        "2.5": "2.5",
         "0.4dev" : "0.4",
         "0.5dev" : "0.5",
         "0.6dev" : "0.6",
@@ -90,7 +92,9 @@ $(function () {
         "2.1dev" : "2.1",
         "2.2dev" : "2.2",
         "2.3dev" : "2.3",
-        "2.4dev" : "unpackaged",
+        "2.4dev" : "2.4",
+        "2.5dev" : "2.5",
+        "2.6dev" : "unpackaged",
     }
 
     /******** Functions to talk to the API on the server ***********/
@@ -839,7 +843,7 @@ $(function () {
                     // Look for mention of MathJax in program; don't import it if it's not used
                     var mathjax = ''
                     if (header.source.indexOf('MathJax') >= 0)
-                    	mathjax = '<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>\n'
+                    	mathjax = '<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>\n'
 
 					var embedScript = window.glowscript_compile(header.source,
                     		{lang: header.lang, version: header.version.substr(0,3), run: false})
@@ -867,17 +871,19 @@ $(function () {
                     else if (v >= 2.2) verdir = "2.1"
                     else verdir = header.version.substr(0,3)
                     var runner = ''
+                    var exporturl = "http://www.glowscript.org/"
+                    if (v >= 2.5) exporturl = "https://s3.amazonaws.com/glowscript/"
                     if (header.lang == 'vpython' || header.lang == 'rapydscript') 
-                    	runner = '<script type="text/javascript" src="http://www.glowscript.org/package/RSrun.' + header.version + '.min.js"></script>\n'  
+                    	runner = '<script type="text/javascript" src="'+exporturl+'package/RSrun.' + header.version + '.min.js"></script>\n'
                     var embedHTML = (
                         '<div id="' + divid + '" class="glowscript">\n' + 
-                        '<link type="text/css" href="http://www.glowscript.org/css/redmond/' + verdir + '/jquery-ui.custom.css" rel="stylesheet" />\n' + 
-                        '<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css" />\n' + 
-                        '<link type="text/css" href="http://www.glowscript.org/css/ide.css" rel="stylesheet" />\n' + 
+                        '<link type="text/css" href="'+exporturl+'css/redmond/' + verdir + '/jquery-ui.custom.css" rel="stylesheet" />\n' + 
+                        '<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css" />\n' + 
+                        '<link type="text/css" href="'+exporturl+'css/ide.css" rel="stylesheet" />\n' + 
                         mathjax +
-                        '<script type="text/javascript" src="http://www.glowscript.org/lib/jquery/' + verdir + '/jquery.min.js"></script>\n' +
-                        '<script type="text/javascript" src="http://www.glowscript.org/lib/jquery/' + verdir + '/jquery-ui.custom.min.js"></script>\n' +
-                        '<script type="text/javascript" src="http://www.glowscript.org/package/glow.' + header.version + '.min.js"></script>\n' +
+                        '<script type="text/javascript" src="'+exporturl+'lib/jquery/' + verdir + '/jquery.min.js"></script>\n' +
+                        '<script type="text/javascript" src="'+exporturl+'lib/jquery/' + verdir + '/jquery-ui.custom.min.js"></script>\n' +
+                        '<script type="text/javascript" src="'+exporturl+'package/glow.' + header.version + '.min.js"></script>\n' +
                         runner +
                         '<script type="text/javascript"><!--//--><![CDATA[//><!--\n' +
                         embedScript +
@@ -1058,13 +1064,15 @@ $(function () {
                     
                     if (worker !== undefined && worker !== null) worker.terminate() // stop a previous worker
                     
-                    if (lang == 'javascript') worker = new WorkerClient(["ace"], "ace/mode/javascript_worker", "JavaScriptWorker")
+                    //if (lang == 'javascript') worker = new WorkerClient(["ace"], "ace/mode/javascript_worker", "JavaScriptWorker")
+                    worker = new WorkerClient(["ace"], "ace/mode/javascript_worker", "JavaScriptWorker")
                     
                     var doc = session.getDocument()
                     if (worker !== undefined && worker !== null) worker.$doc = doc // must set this in order to be able to execute worker.terminate()
                     
-                    if (lang == 'rapydscript' || lang == 'vpython') worker.call("setValue", [''])
-                    else worker.call("setValue", [lintPrefix])
+                    //if (lang == 'rapydscript' || lang == 'vpython') worker.call("setValue", [''])
+                    //else worker.call("setValue", [lintPrefix])
+                    worker.call("setValue", [lintPrefix])
 
                     var header = null
                     var headerError = null
