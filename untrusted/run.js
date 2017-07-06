@@ -25,12 +25,22 @@ window.glowscript_libraries = { // used for unpackaged (X.Ydev) version
         "../lib/glow/extrude.js",
         "../lib/glow/api_misc.js",
         "../lib/glow/shaders.gen.js",
-        "../lib/compiling/transform.js" // transform.js needed for running programs embedded in other web sites
-        ],
+        "../lib/compiling/transform.js"
+        ], // Streamline transform.js needed for running programs embedded in other web sites
+        //"../lib/compiling/transform-es6.min.js"
     compile: [
         "../lib/compiling/GScompiler.js",
         "../lib/compiling/acorn.es.js",
         "../lib/compiling/papercomp.js",
+        
+        // Streamline files used until Fall 2016:
+        //"../lib/narcissus/lib/jsdefs.js",
+        //"../lib/narcissus/lib/jslex.js",
+        //"../lib/narcissus/lib/jsparse.js",
+        //"../lib/narcissus/lib/jsdecomp.js",
+        //"../lib/streamline/compiler/format.js",
+        //"../lib/streamline/compiler/transform.js",
+        
         //"../lib/compiling/transform.js", // needed only for exporting a program
         "../lib/coffee-script.js"
         ],
@@ -39,6 +49,15 @@ window.glowscript_libraries = { // used for unpackaged (X.Ydev) version
         "../lib/rapydscript/compiler.js", // includes runtime library
         "../lib/compiling/acorn.es.js",
         "../lib/compiling/papercomp.js",
+        
+        // Streamline files used until Fall 2016:
+        //"../lib/narcissus/lib/jsdefs.js",
+        //"../lib/narcissus/lib/jslex.js",
+        //"../lib/narcissus/lib/jsparse.js",
+        //"../lib/narcissus/lib/jsdecomp.js",
+        //"../lib/streamline/compiler/format.js",
+        //"../lib/streamline/compiler/transform.js",
+        
         //"../lib/compiling/transform.js", // needed only for exporting a program
         ],
     //RSrun: [ // needed only for an exported program (runtime functions are included in the rapydscript compiler)
@@ -59,7 +78,7 @@ function ideRun() {
         // We are being loaded from a development server; we don't know if the parent is also running on
         // a development server or is the actual web site
         //also_trusted = "http://localhost:8080"
-    	trusted_origin = "http://localhost:12080" // this eliminates some irrelevant error messages when testing
+    	trusted_origin = "http://localhost:8080" // this eliminates some irrelevant error messages when testing
     }
 
     function send(msg) {
@@ -101,7 +120,7 @@ function ideRun() {
                 // Look for mention of MathJax in program; don't import it if it's not used
                 try {
 	                if (message.program.indexOf('MathJax') >= 0)
-	                	packages.push("http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML")
+	                	packages.push("http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML")
                 }
 	            catch(err) {
 	            	;
@@ -153,11 +172,12 @@ function ideRun() {
             if (program.charAt(0) == '\n') program = program.substr(1) // There can be a spurious '\n' at the start of the program source
             var options = {lang: lang, version: version, run: true}
             var program = glowscript_compile(program, options)
-            //console.log('run program')
             //var p = program.split('\n')
         	//for (var i=0; i<p.length; i++) console.log(i, p[i])
-        	var main = eval_script(program)
-            window.userMain = main
+        	var usermain = eval_script(program)
+            // At this point the user program has not been executed.
+            // Rather, eval_script has prepared the user program to be run.
+            window.userMain = usermain
 
             $("#loading").remove()
             window.__context = {
