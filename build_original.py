@@ -33,7 +33,7 @@ shader_file.append("}});")
 shader_file = "\n".join(shader_file)
 open("lib/glow/shaders.gen.js", "wb").write(shader_file)
 
-version = "2.5"
+version = "2.6"
 # TODO: Extract this information from run.js
 
 glowscript_libraries = {
@@ -41,6 +41,7 @@ glowscript_libraries = {
         "../lib/jquery/"+"2.1"+"/jquery.mousewheel.js", # use 2.1 lib with version 2.2/2.3
         "../lib/flot/jquery.flot.min.js",
         "../lib/flot/jquery.flot.crosshair_GS.js",
+        "../lib/flot/jquery.flot.axislabels.js",
         "../lib/opentype/poly2tri.js",
         "../lib/opentype/opentype.js",
         "../lib/glMatrix.js",
@@ -61,6 +62,7 @@ glowscript_libraries = {
         "../lib/glow/shaders.gen.js",
         # Unfortunately, uglify currently cannot handle function*, an ES6 feature in the es6 version of transform.js.
         # Tried using babel to make an ES5 version of transform.js, to be able to uglify, but uglify failed again.
+        # Later: uglify-es does seem to handle ES6 but fails on RSrun; see below.
         # So let's use the older version of Streamline:
         "../lib/compiling/transform.js" # needed at run time as well as during compiling
         ],
@@ -107,7 +109,9 @@ def minify(inlibs, inlibs_nomin, outlib):
     outf = open(outlib, "wb")
     
     if True: # minify if True
-        uglify = subprocess.Popen( "build-tools/node.exe build-tools/UglifyJS/uglify-js/bin/uglifyjs",
+        # This fails on RSrun; had to use https://jscompress.com/ to minify RSrun:
+        uglify = subprocess.Popen( "build-tools/node.exe build-tools/Uglify-ES/uglify-es/bin/uglifyjs",
+        #uglify = subprocess.Popen( "build-tools/node.exe build-tools/UglifyJS/uglify-js/bin/uglifyjs",
             stdin=subprocess.PIPE,
             stdout=outf,
             stderr=outf, # write uglify errors into output file

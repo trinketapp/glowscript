@@ -9,13 +9,14 @@ var gulp   = require('gulp')
   , version
   , glowscript_libraries;
 
-version = '2.5.1';
+version = '2.6.1';
 
 glowscript_libraries = {
   "glow": [
     "lib/jquery/2.1/jquery.mousewheel.js",
     "lib/flot/jquery.flot.min.js",
     "lib/flot/jquery.flot.crosshair_GS.js",
+    "lib/flot/jquery.flot.axislabels.js",
     "lib/opentype/poly2tri.js",
     "lib/opentype/opentype.js",
     "lib/glMatrix.js",
