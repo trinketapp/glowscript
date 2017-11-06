@@ -39,9 +39,8 @@ version = "2.6"
 glowscript_libraries = {
     "run": [
         "../lib/jquery/"+"2.1"+"/jquery.mousewheel.js", # use 2.1 lib with version 2.2/2.3
-        "../lib/flot/jquery.flot.min.js",
+        "../lib/flot/jquery.flot.js",
         "../lib/flot/jquery.flot.crosshair_GS.js",
-        "../lib/flot/jquery.flot.axislabels.js",
         "../lib/opentype/poly2tri.js",
         "../lib/opentype/opentype.js",
         "../lib/glMatrix.js",
@@ -66,9 +65,6 @@ glowscript_libraries = {
         # So let's use the older version of Streamline:
         "../lib/compiling/transform.js" # needed at run time as well as during compiling
         ],
-##    "transform": [
-##        "../lib/compiling/transform-es6.min.js"
-##        ],
     "compile": [
         "../lib/coffee-script.js",
         "../lib/compiling/GScompiler.js",
@@ -109,9 +105,7 @@ def minify(inlibs, inlibs_nomin, outlib):
     outf = open(outlib, "wb")
     
     if True: # minify if True
-        # This fails on RSrun; had to use https://jscompress.com/ to minify RSrun:
         uglify = subprocess.Popen( "build-tools/node.exe build-tools/Uglify-ES/uglify-es/bin/uglifyjs",
-        #uglify = subprocess.Popen( "build-tools/node.exe build-tools/UglifyJS/uglify-js/bin/uglifyjs",
             stdin=subprocess.PIPE,
             stdout=outf,
             stderr=outf, # write uglify errors into output file
@@ -132,5 +126,9 @@ minify( glowscript_libraries["compile"], [], "package/compiler." + version + ".m
 print('Finished JavaScript compiler package\n')
 minify( glowscript_libraries["RScompile"], [], "package/RScompiler." + version + ".min.js" )
 print('Finished RapydScript compiler package\n')
+
+# For GlowScript 2.6 runtime.js had the encoding "UCS-2 LE BOM" which the Uglify
+# machinery could not handle. Using (on Windows) notepad++ the encoding was changed
+# to "UTF-8" which solved the problem.
 minify( glowscript_libraries["RSrun"], [], "package/RSrun." + version + ".min.js" )
 print('Finished RapydScript run-time package')
