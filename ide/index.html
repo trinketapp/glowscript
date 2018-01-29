@@ -62,7 +62,7 @@ Loading...
         Thanks to the <a href="https://github.com/kovidgoyal/rapydscript-ng" target="_blank">RapydScript-NG</a>
         compiler, you can use VPython here.</p>
         
-        <p><b>New version 2.6:</b> Can resize a canvas; new graph titles</p>
+        <p><b>New version 2.7:</b> Powerful new <a href="http://www.glowscript.org/docs/VPythonDocs/graph.html">graphing options</a></p>
         </div>
 
         The Help provides full documentation.
@@ -82,7 +82,7 @@ Loading...
 
     <div id="footerWrap"> 
     <div id="footerInner">
-    <h2>G l o w S c r i p t&nbsp;&nbsp; 2.6</h2>
+    <h2>G l o w S c r i p t&nbsp;&nbsp; 2.7</h2>
         <a href="/#/user/GlowScriptDemos/folder/Examples/" target="_blank">Example programs</a> |
         <a href="https://groups.google.com/forum/?fromgroups#!forum/glowscript-users" target="_blank">Forum</a>
         </div>
@@ -95,38 +95,50 @@ Loading...
     <div class="header">
         <div class="spacer">
             <span class="username">User</span>'s <a href="#/">GlowScript</a> Programs
-            <div class="folderTabs ui-tabs ui-widget">
-                <ul class="folderList ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-corner-all">
-                    <li class="folderListItem template ui-state-default ui-corner-top"><a class="folder-name"></a></li>
-                    <li class="folder-new-tab ui-state-default ui-corner-top"><a href="#newFolder" class="folder-new">Add Folder</a></li>
-                </ul>
-                <div id="Public" style="display:none"></div>
-                <div id="Scratch" style="display:none"></div>
-            </div>
         </div>
     </div>
 
     <div class="after-header"></div>
     
-    <a href="#newProgram" class="program-new button">Create New Program</a>
-    <a href="#delFolder" class="folder-delete template button">Delete this folder</a>
-
-    <div class="programs">
-        <div class="program template">
-            <img class="prog-screenshot" />
-            <div class="prog-header">
-                <div class="prog-name"></div>
-                <a href="#Run" class="prog-run button">Run</a>
-                <a href="#Edit" class="prog-edit button">Edit</a> 
-                <a href="#Delete" class="prog-delete button">Delete</a>
+    <div class="tabs" style="float:left">
+            <div class="folderTabs ui-tabs ui-widget" style="float:left">
+                <ul class="folderList ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-corner-all" style="float:left">
+                    <li class="folderListItem template ui-state-default ui-corner-top"><a class="folder-name" style="font-size: 12px"></a></li>
+                    <li class="folder-new-tab ui-state-default ui-corner-top"><a href="#newFolder" class="folder-new" style="font-size: 12px">Add Folder</a></li>
+                </ul>
             </div>
-            <div class="prog-description"></div>
+     </div>
+    
+    <br><br>
+    <div>
+        <a href="#Public" class="folder-public button">&nbsp;&nbsp;&nbsp;PUBLIC</a>
+        <a href="#newProgram" class="program-new button">Create New Program</a>
+        <a href="#delFolder" class="folder-delete template button">Delete this folder</a>
+		<br>
+        <div class="programs" style="float:left">
+            <div class="program template" style="float:left">
+                <img class="prog-screenshot" />
+                <div class="prog-header" style="float:left">
+                    <div class="prog-name"></div>
+                    <div class="prog-datetime"></div>
+                    <a href="#Run" class="prog-run button">Run</a>
+                    <a href="#Edit" class="prog-edit button">Edit</a> 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;<br><br>&nbsp;
+                    <a href="#Copy" class="prog-copy button">Copy</a>
+                    <a href="#Rename" class="prog-rename button">Rename</a>
+                    <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="#Delete" class="prog-delete button">Delete</a>
+                    <br>
+                </div>
+            </div>
         </div>
     </div>
 
 </div>
 
-<div id="newUser-dialog" class="form-dialog template" title="Welcome to GlowScript.org!">
+<div id="newUser-dialog" class="form-dialog template" title="Welcome to GlowScript.org!" style="font-size: 12px">
     <p>
     To use GlowScript.org you will need to choose a unique name for yourself.  This name will be visible to other
     internet users and will be part of the URLs you can use to share programs.  You can use your own name or a pseudonym, but
@@ -140,18 +152,32 @@ Loading...
     </form>
 </div>
 
-<div id="prog-new-dialog" class="form-dialog template" title="Create New Program">
+<div id="prog-new-dialog" class="form-dialog template" title="Create New Program" style="font-size: 12px">
     <form>
         <label for="name">Name</label>
         <input type="text" name="name" class="text ui-widget-content ui-corner-all" />
     </form>
 </div>
 
-<div id="prog-delete-dialog" class="form-dialog template" title="Delete Program">
+<div id="prog-copy-dialog" class="form-dialog template" title="Copy Program" style="font-size: 12px">
+    <form>
+        <label for="name">New name, or existing folder/new name:</label>
+        <input type="text" class="copy-default" name="name" class="text ui-widget-content ui-corner-all" />
+    </form>
+</div>
+
+<div id="prog-rename-dialog" class="form-dialog template" title="Rename Program" style="font-size: 12px">
+    <form>
+        <label for="name">New name, or existing folder/new name:</label>
+        <input type="text" class="rename-default" name="name" class="text ui-widget-content ui-corner-all" />
+    </form>
+</div>
+
+<div id="prog-delete-dialog" class="form-dialog template" title="Delete Program" style="font-size: 12px">
     Are you sure you want to delete <span class="name prog-name">this program</span>?  This action cannot be undone!
 </div>
 
-<div id="folder-new-dialog" class="form-dialog template" title="Create New Folder">
+<div id="folder-new-dialog" class="form-dialog template" title="Create New Folder" style="font-size: 12px">
     <form>
         <label for="name">Name</label>
         <input type="text" name="name" class="text ui-widget-content ui-corner-all" />
@@ -160,7 +186,7 @@ Loading...
     </form>
 </div>
 
-<div id="folder-delete-dialog" class="form-dialog template" title="Delete Folder">
+<div id="folder-delete-dialog" class="form-dialog template" title="Delete Folder" style="font-size: 12px">
     Are you sure you want to delete <span class="name folder-name">this folder</span>?
 </div>
 
@@ -232,6 +258,7 @@ Loading...
     -->
 </div>
 
+<!-- <script type="text/javascript" language="javascript" src="lib/require.min.js"></script> -->
 <script type="text/javascript" language="javascript" src="lib/jquery/IDE/jquery.min.js"></script>
 <script type="text/javascript" language="javascript" src="lib/jquery/IDE/jquery.textchange.custom.js"></script>
 <script type="text/javascript" language="javascript" src="lib/jquery/IDE/jquery-ui.custom.min.js"></script>
@@ -240,7 +267,7 @@ Loading...
 <script type="text/javascript" language="javascript" src="lib/ace/mode-javascript.js"></script>
 <script type="text/javascript" language="javascript" src="lib/ace/mode-coffee.js"></script>
 <script type="text/javascript" language="javascript" src="lib/ace/mode-python.js"></script>
-<script type="text/javascript" language="javascript" src="package/symbols.2.6.min.js"></script>
+<script type="text/javascript" language="javascript" src="package/symbols.2.7.min.js"></script>
 <script type="text/javascript" language="javascript" src="ide.js"></script>
 
 </body>
