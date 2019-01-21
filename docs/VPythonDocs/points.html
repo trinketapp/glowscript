@@ -1,6 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/template.dwt" codeOutsideHTMLIsLocked="false" -->
-<head>
+<!-- InstanceBegin template="/Templates/template.dwt" codeOutsideHTMLIsLocked="false" --><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- InstanceBeginEditable name="doctitle" -->
 <title>VPython Help</title>
@@ -34,6 +32,7 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
       <p class="Normal">If you're new to Python <br />
       and VPython: <a href="VisualIntro.html">Introduction</a></p>
       <p class="Normal">A VPython <a href="VPython_Intro.pdf" target="_blank">tutorial</a></p>
+      <p class="Normal"><a href="videos.html">Introductory Videos</a></p>
       <p class="Normal"><a href="primitives.html">Pictures</a> of 3D objects</p>
 <p><select id="menu1" onchange="jumpMenu(this)"></select></p>
 <p><select id="menu2" onchange="jumpMenu(this)"></select></p>
@@ -67,7 +66,8 @@ function MM_jumpMenu(targ,selObj,restore){ //v3.0
           default), but if <span class="attribute">size_units=&quot;world&quot;</span>, the radius is in the same terms as other objects.
   Setting the radius to 0 is the same as not specifying a size, in which case the radius will be 2.5 pixels, just as a curve is thin if its radius is specified as 0. If <span class="attribute">size_units=&quot;world&quot;</span>, the default radius is 0.5.</p>
         <p class="Normal">With <span class="attribute">size_units=&quot;pixels&quot;</span> in effect (the default), a point in the z = 0 plane will have the specified radius, but it will be larger or smaller than the specified radius if it is nearer or farther from the camera.</p>
-      <p class="Normal">The options for manipulating a <strong><a href="curve.html">curve</a></strong> can also be used with the points object, but currently the points object doesn't handle changes in axis or size, does not have an origin nor a rotate method, nor can be made into a compound.&nbsp;&nbsp;</p>
+        <p class="Normal">Unlike a curve object, a points object can be transparent (opacity &lt; 1).</p>
+    <p class="Normal">The options for manipulating a <strong><a href="curve.html">curve</a></strong> can also be used with the points object, but currently the points object doesn't handle changes in axis or size, does not have an origin nor a rotate method, nor can it be made into a compound.&nbsp;&nbsp;</p>
         <div>
     <!-- InstanceEndEditable --></td>
   </tr>

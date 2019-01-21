@@ -1,5 +1,7 @@
 Note: After installing nodejs, on Windows you must copy node.exe into the build-tools folder.
 
+An image of the GoDaddy.com DNS data as of 2018 Sept. 17 is in docs/DomainData.png.
+
 ********************************************************
 * See the start of lib/compiling/GScompiler.js for how *
 * to obtain the external libraries used by GlowScript. *
@@ -76,9 +78,7 @@ This has not actually been done so far.
 
 ************************************************************************************
     UPDATE library files in AWS/S3: https://s3.amazonaws.com/glowscript/package/
-************************************************************************************
-
-*********************************************************************************************
+    UPDATE library files in the GlowScriptOffline package and create zip file
     UPDATE the glow library used in VPython 7; generate it with build_original_no_overload.py
     (This includes vectors_no_overload.js instead of vectors.js.)
 *********************************************************************************************
