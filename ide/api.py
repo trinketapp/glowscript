@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+# READ THIS CAREFULLY:
+
 # With the earlier Google App Engine based on Python 2.5, encoded url's sent
 # to api.py from ide.js that contained escaped characters, such as %20 for space,
 # were not modified before being routed to handlers such as ApiUserFolder.
@@ -9,22 +13,28 @@
 # Note that in ide.js all work with folders and programs is done with decoded
 # forms (e.g. space, not %20), but urls are encoded at the time of sending to api.py.
 
-# python_version 2.5 works and can be deployed with Google App Engine Launcher 1.7.2
+# Consider the following code, which is similar in all request handlers.
+# webapp2 delivers user, folder, and name, so why do we then re-parse self.request.path
+# to re-acquire these variables? When we tried eliminating the re.search machinery,
+# users whose user name contained a space could no longer reach their files.
+# For the reasons noted above, this duplication of effort is necessary.
+# class ApiUserFolderProgram(ApiRequest):
+#     def get(self, user, folder, name):
+#         m = re.search(r'/user/([^/]+)/folder/([^/]+)/program/([^/]+)', self.request.path)
+#         user = m.group(1)
+#         folder = m.group(2)
+#         name = m.group(3)
+
 # python_version 2.7 works and can be deployed with Google App Engine Launcher 1.7.6
 
-python_version = '2.7'
-
-if python_version == '2.7':
-    import webapp2 as web
-    import json
-else:
-    from google.appengine.ext import webapp as web
-    from google.appengine.ext.webapp.util import run_wsgi_app
-    from django.utils import simplejson as json
+import webapp2 as web
+import json
+import StringIO
+import zipfile
 
 from google.appengine.ext import ndb
 from google.appengine.api import users
-import os, re, base64, logging
+import os, re, base64, logging # logging.info(....) prints to GAE launcher log, for debugging
 from datetime import datetime
 
 # URI encoding (percent-escaping of all characters other than [A-Za-z0-9-_.~]) is used for names
@@ -180,7 +190,7 @@ class ApiUser(ApiRequest):
         ndb_user = User( id=username, gaeUser=gaeUser, secret=base64.urlsafe_b64encode(os.urandom(16)) )
         ndb_user.put()
 
-        ndb_my_programs = Folder( parent=ndb_user.key, id="Public", isPublic=True )
+        ndb_my_programs = Folder( parent=ndb_user.key, id="MyPrograms", isPublic=True )
         ndb_my_programs.put()
         ndb_my_programs = Folder( parent=ndb_user.key, id="Private", isPublic=False )
         ndb_my_programs.put()
@@ -332,6 +342,79 @@ class ApiUserFolderProgram(ApiRequest):
         if ndb_program:
             ndb_program.key.delete()
 
+class ApiUserFolderProgramDownload(ApiRequest):
+	# route = /api/user/username/folder/foldername/program/programname/options/downloadProgram or ...../downloadFolder
+    def get(self, user, folder, name, op):                                   ##### download a public or owned program or folder
+        m = re.search(r'/user/([^/]+)/folder/([^/]+)/program/([^/]+)/option/([^/]+)', self.request.path)
+        user = m.group(1)
+        folder = m.group(2)
+        name = m.group(3)   # If option is downloadFolder, name is meaningless
+        option = m.group(4) # Currently downloadProgram or downloadFolder
+    	if not self.authorize(): return
+        gaeUser = users.get_current_user()
+        ndb_user = ndb.Key("User",user).get()
+        if option == 'downloadProgram':
+        	if not self.validate(user, folder, name): return
+	        ndb_folder = ndb.Key("User",user,"Folder",folder).get()
+	        try:
+	        	pub = ndb_folder.isPublic is None or ndb_folder.isPublic or gaeUser == ndb_user.gaeUser # before March 2015, isPublic wasn't set
+	        except:
+	        	pub = True
+	        if not pub:
+	            return self.error(405)
+	        ndb_program = ndb.Key("User",user,"Folder",folder,"Program",name).get()
+	        if not ndb_program:
+	            return self.error(404)
+	        source = unicode(ndb_program.source or unicode())
+	        end = source.find('\n')
+	        if source[0:end].find('ython') > -1: # VPython
+	        	source = "from vpython import *\n#"+source
+	        	extension = '.py'
+	        elif source[0:end].find('apyd') > -1: # RapydScript
+	        	extension = '.py'
+	        elif source[0:end].find('ofee') > -1: # CofeeScript (1.1 is the only version)
+	        	extension = '.cs'
+	        else:                    # JavaScript
+	        	extension = '.js'
+	        self.response.headers['Content-Disposition'] = 'attachment; filename='+user+'_'+name+extension
+	        self.response.write(source)
+        elif option == 'downloadFolder':
+	        if not self.validate(user, folder): return
+	        ndb_folder = ndb.Key("User",user,"Folder",folder).get()
+	        try:
+	        	pub = ndb_folder.isPublic is None or ndb_folder.isPublic or gaeUser == ndb_user.gaeUser # before March 2015, isPublic wasn't set
+	        except:
+	        	pub = True
+	        if not pub:
+	            return self.error(405)
+	        # https://newseasandbeyond.wordpress.com/2014/01/27/creating-in-memory-zip-file-with-python/
+	        buff = StringIO.StringIO()
+	        za = zipfile.ZipFile(buff, mode='w', compression=zipfile.ZIP_DEFLATED)
+	        programs = [
+	            { "name": p.key.id(),
+	              "source": p.source  # unicode(p.source or unicode())
+	            } for p in Program.query(ancestor=ndb.Key("User",user,"Folder",folder)) ]
+	        for p in programs:
+	        	source = p['source']
+		        end = source.find('\n')
+		        if source[0:end].find('ython') > -1: # VPython
+		        	source = "from vpython import *\n#"+source
+		        	extension = '.py'
+		        elif source[0:end].find('apyd') > -1: # RapydScript
+		        	extension = '.py'
+		        elif source[0:end].find('ofee') > -1: # CofeeScript (1.1 is the only version)
+		        	extension = '.cs'
+		        else:                    # JavaScript
+	        		extension = '.js'
+		        out = StringIO.StringIO()
+		        out.write(unicode(source))
+		        za.writestr(p['name']+extension, out.getvalue().encode('utf-8'))
+	        za.close()
+	        self.response.headers['Content-Disposition'] = 'attachment; filename='+user+'_'+folder+'.zip'
+	        self.response.write(buff.getvalue())
+        else:
+	        self.error(404)
+
 class ApiAdminUpgrade(ApiRequest):
     allowJSONP = None
     def post(self):
@@ -351,6 +434,7 @@ class ApiAdminUpgrade(ApiRequest):
 
 app = web.WSGIApplication(
     [
+        (r'/api/user/([^/]+)/folder/([^/]+)/program/([^/]+)/option/([^/]+)', ApiUserFolderProgramDownload),
         (r'/api/user/([^/]+)/folder/([^/]+)/program/([^/]+)', ApiUserFolderProgram),
         (r'/api/user/([^/]+)/folder/([^/]+)/program/', ApiUserFolderPrograms),
         (r'/api/user/([^/]+)/folder/([^/]+)', ApiUserFolder),
@@ -363,10 +447,4 @@ app = web.WSGIApplication(
         (r'/api/admin/upgrade', ApiAdminUpgrade),
     ],
     debug=True)
-
-if python_version == '2.7':
-    pass
-else:
-    def main():
-        run_wsgi_app(app)
 

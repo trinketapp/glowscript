@@ -119,6 +119,9 @@ $(function () {
                 u += "/folder/" + encode(route.folder)  // folder might be LIST, to get the list
                 if (route.program !== undefined) {
                     u += "/program/" + encode(route.program)  // program might be LIST, to get the list
+                    if (route.option !== undefined) {
+                    	u += "/option/" + route.option
+                    }
                 }
             }
             return u
@@ -146,7 +149,6 @@ $(function () {
             url: url,
             data: { 'program': JSON.stringify(data) },
             headers: { 'X-CSRF-Token': loginStatus.secret },
-            //contentType: 'application/json',
             dataType: 'text',  // actually nothing?
             success: callback,
             error: function (xhr, message, exc) {
@@ -164,6 +166,19 @@ $(function () {
             success: callback,
             error: function (xhr, message, exc) {
                 apiError("API " + message + " deleting " + url + ": " + exc)
+            }
+        })
+    }
+    function apiDownload(route, callback) { 
+    	// route = /api/user/username/folder/foldername/program/programname/options/download
+    	// Slight modifications here and in api.py could handle options other than download
+    	var url = apiURL(route)
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: callback,
+            error: function (xhr, message, exc) {
+                apiError("API " + message + " downloading " + url + ": " + exc)
             }
         })
     }
@@ -377,6 +392,8 @@ $(function () {
         if (m) return { page: "edit", user: m[1], folder: m[2], program: m[3] }
         m = h.match(new RegExp("/user/([^/]+)/folder/([^/]+)/program/([^/]+)/share$"))
         if (m) return { page: "share", user: m[1], folder: m[2], program: m[3] }
+        m = h.match(new RegExp("/user/([^/]+)/folder/([^/]+)/program/([^/]+)/option/([^/]+)"))
+        if (m) return { page: m[4], user: m[1], folder: m[2], program: m[3], option:m[4] }
         m = h.match(new RegExp("/user/([^/]+)/folder/([^/]+)/program/([^/]+)$"))
         if (m) return { page: "run", user: m[1], folder: m[2], program: m[3] }
         m = h.match(new RegExp("/user/([^/]+)/folder/([^/]+)/$"))
@@ -402,6 +419,8 @@ $(function () {
                 if (route.program) {
                     h += "program/" + e(route.program)
                     if (route.page == "run") return h
+                    if (route.page == "downloadFolder") return h + "/option/" + e(route.page)
+                    if (route.page == "downloadProgram") return h + "/option/" + e(route.page)
                     if (route.page == "share" || route.page == "edit") return h + "/" + e(route.page)
                 }
             }
@@ -503,6 +522,12 @@ $(function () {
     pages.action = function(route) {
         redirect( {page: "welcome"} )
     }
+    pages.downloadFolder = function(route) { // Currently the only program option is download (download a program to user computer) // Currently the only program option is download (download a program to user computer)
+        apiDownload( {user:route.user, folder:route.folder, program:'program', option:'downloadFolder'}, function(ret) {
+    		window.location = apiURL(route) // this sends the file to the user's download folder
+        	navigate(unroute(route, {page:"folder"})) // return to (stay on) folder page
+        })
+    }
     pages.folder = function (route) {
         var username = route.user, folder = route.folder
         var isWritable = route.user === loginStatus.username
@@ -519,6 +544,7 @@ $(function () {
 
     	page.find(".username").text(username) // + ", IDE jQuery ver. " + jQuery.fn.jquery) // To show IDE jQuery version number at top of IDE during run.
         page.find(".foldername").text(folder)
+        page.find(".folder-download.button").prop("href", unroute({page:"downloadFolder", user:username, program:'program', folder:folder}))
         pageBody.html(page)
 
         function createDialog( templ, doCreate ) { // dialog for creating a new program
@@ -732,7 +758,8 @@ $(function () {
                 h.insertBefore(before)
             }
             var s = "PRIVATE"
-            if (set_of_folders[folder]) s = "PUBLIC"
+            var pub = set_of_folders[folder] // will be null if folder predates the PRIVATE option
+            if (pub === null || pub === true) s = "PUBLIC"
             page.find(".folder-public.button").text(s)
         })
         	
@@ -788,8 +815,13 @@ $(function () {
 	                progList.append(p)
 	            })(programs[i])
             }
-            if (isWritable && programs.length==0) page.find(".folder-delete").removeClass("template")
-            else page.find(".folder-delete").addClass("template")
+            if (isWritable && programs.length==0) {
+            	page.find(".folder-delete").removeClass("template")
+            	page.find(".folder-download.button").addClass("template")
+            } else {
+            	page.find(".folder-delete").addClass("template")
+            	page.find(".folder-download.button").prop("href", unroute({page:"downloadFolder", user:username, program:'program', folder:folder}    )   )
+            }
         })
     }
     pages.run = function(route) {
@@ -1033,7 +1065,7 @@ $(function () {
                     // Look for mention of MathJax in program; don't import it if it's not used
                     var mathjax = ''
                     if (header.source.indexOf('MathJax') >= 0)
-                    	mathjax = '<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>\n'
+                    	mathjax = '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>\n'
 
 					var embedScript = window.glowscript_compile(header.source,
                     		{lang: header.lang, version: header.version.substr(0,3), run: false})
@@ -1067,6 +1099,7 @@ $(function () {
                     	runner = '<script type="text/javascript" src="'+exporturl+'package/RSrun.' + header.version + '.min.js"></script>\n'
                     var embedHTML = (
                         '<div id="' + divid + '" class="glowscript">\n' + 
+                        '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">\n' +
                         '<link type="text/css" href="'+exporturl+'css/redmond/' + verdir + '/jquery-ui.custom.css" rel="stylesheet" />\n' + 
                         '<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css" />\n' + 
                         '<link type="text/css" href="'+exporturl+'css/ide.css" rel="stylesheet" />\n' + 
@@ -1075,8 +1108,8 @@ $(function () {
                         '<script type="text/javascript" src="'+exporturl+'lib/jquery/' + verdir + '/jquery-ui.custom.min.js"></script>\n' +
                         '<script type="text/javascript" src="'+exporturl+'package/glow.' + header.version + '.min.js"></script>\n' +
                         runner +
-                        '<script type="text/javascript"><!--//--><![CDATA[//><!--\n' +
-                        embedScript +
+                        '<script type="text/javascript"><!--//--><![CDATA[//><!--\n\n// START JAVASCRIPT\n' +
+                        embedScript + '\n// END JAVASCRIPT\n' +
                         '\n//--><!]]></script>' +
                         '\n</div>');
                     page.find(".embedSource").text( embedHTML )
@@ -1087,6 +1120,12 @@ $(function () {
         var frameSrc = run_link
         var frameHTML = '<iframe style="border-style:none; border:0; width:650px; height:500px; margin:0; padding:0;" frameborder=0 src="' + frameSrc + '"></iframe>'
         page.find(".frameSource").text( frameHTML );
+    }
+    pages.downloadProgram = function(route) { // Currently the only program option is download (download a program to user computer)
+        apiDownload( {user:route.user, folder:route.folder, program: route.program, option:'downloadProgram'}, function(ret) {
+    		window.location = apiURL(route) // this sends the file to the user's download folder
+        	navigate(unroute(route, {page:"edit"})) // return to (stay on) edit page
+    	})
     }
     pages.edit = function(route) {
         var username = route.user, folder = route.folder, program = route.program // string variables
@@ -1101,9 +1140,8 @@ $(function () {
         var run_link = unroute({page:"run", user:username, folder:folder, program:program})
         page.find(".prog-run.button").prop("href", run_link).prop("title", "Press Ctrl-1 to run\nPress Ctrl-2 to run in another window")
         page.find(".prog-share.button").prop("href", unroute({page:"share", user:username, folder:folder, program:program}))
+        page.find(".prog-download.button").prop("href", unroute({page:"downloadProgram", user:username, folder:folder, program:program}))
         if (!isWritable) page.find(".readonly").removeClass("template")
-
-        // TODO: "Copy this program" link when not writable
 
         pageBody.html(page)
 

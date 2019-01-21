@@ -16,21 +16,30 @@ At [glowscript.org](http://glowscript.org) click Help for full documentation. Th
 
 GlowScript was inspired by [VPython](http://vpython.org). The project was begun in 2011 by David Scherer and Bruce Sherwood. Originally programs had to be written in JavaScript, but in November 2014 it became possible to use Python, thanks to the [RapydScript](https://github.com/atsepkov/RapydScript) Python-to-JavaScript compiler created by Alex Tsepkov. GlowScript is now using a later version, [RapydScript-ng](https://github.com/kovidgoyal/rapydscript-ng) developed by Kovid Goyal.
 
-For information related to building the GlowScript application, see MakingNewVersion.txt in the docs folder.
+For information related to building the GlowScript application, see MakingNewVersion.txt in the docs folder. Also in the docs folder is an overview of the GlowScript architecture, GlowScriptOverview.txt.
 
 Sister Project
 --------------
 A more recent project, VPython 7, was initiated by John Coady and further developed by Ruth Chabay and Bruce Sherwood. VPython 7 lets you run VPython programs in a Jupyter notebook or from program launchers such as IDLE or Spyder: see [vpython.org](http://vpython.org). The syntax is the same as GlowScript VPython, but VPython 7 uses an installed standard Python, which provides access to the large number of Python modules. GlowScript VPython does not require installing any software but provides access only to libraries written in JavaScript, not to standard Python modules.
  
+Run Locally
+------------------
+At glowscript.org, your programs are stored in the cloud and are accessible from anywhere. However, there are times when you might need to write and run programs even when disconnected from the internet.
+
+In this repository, click GlowScriptOffline2.7.zip and download the zip file.
+
+Unzip the GlowScriptOffline package to any convenient place on your computer.
+
+Inside the GlowScriptOffline folder, read the README file to learn how to use the package. 
+ 
 Run a Local Server
 ------------------
- This repository is a Google App Engine application. Here are instructions for running locally, using a local server:
+This repository is a Google App Engine application. Here are instructions for running locally, using a local server (this is much more complicated than running locally as described under the previous heading):
 
    http://www.glowscript.org/docs/GlowScriptDocs/local.html
 
 License
 -------
-
 The license is found at [LICENSE.txt](https://github.com/BruceSherwood/glowscript/blob/master/LICENSE.txt).
 
 Early version
